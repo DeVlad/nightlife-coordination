@@ -16,10 +16,13 @@ var User = require('../models/user');
 module.exports = function (app, passport) {
 
     app.get('/', function (req, res) {
+        if (req.isAuthenticated()) {
+            return res.render('index_auth');
+        }       
         res.render('index');
     });
 
-    app.get('/login', function (req, res) {
+    app.get('/login', function (req, res) {        
         res.render('login', {
             message: req.flash('loginMessage')
         });
