@@ -20,6 +20,23 @@ mongoose.connect(uri, options, function(error) {
     }
 });
 
+// API
+var apiSettings = {
+    url: process.env.API_URL,
+    client_id: process.env.API_ID,
+    client_secret: process.env.API_KEY,
+    v: 20180101,
+    query: "bar",
+    near: "",
+    limit: 10
+};
+    
+//console.log(apiSettings);
+if(!process.env.API_URL || (!process.env.API_ID) || (!process.env.API_KEY)) {
+    console.log('WARNING: Please export API credentials as environment variables')
+}
+
+// Passport Auth
 require('./config/passport')(passport);
 
 // Read cookies
