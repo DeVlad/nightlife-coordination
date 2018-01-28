@@ -13,13 +13,27 @@ app.use(bodyParser.json());
 
 var User = require('../models/user');
 
+// API
+if(!process.env.API_URL || (!process.env.API_ID) || (!process.env.API_KEY)) {
+    console.log('WARNING: Please export API credentials as environment variables');
+} else {
+   // console.log('API SETTINGS: OK');
+}
+
+var config = require('../config/config');
+console.log(config);
+
 module.exports = function (app, passport) {
 
-    app.get('/', function (req, res) {
+    app.get('/', function (req, res) {        
         if (req.isAuthenticated()) {
             return res.render('index_auth');
-        }       
+        }
         res.render('index');
+    });
+    
+    app.post('/', function (req, res) {            
+        res.send(req.body.search);
     });
 
     app.get('/login', function (req, res) {        
