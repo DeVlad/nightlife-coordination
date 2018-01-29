@@ -6,37 +6,40 @@ var form = require('express-form2'),
     field = form.field,
     validate = form.validate;
 var app = express();
+
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+
 app.use(bodyParser.json());
 
 var User = require('../models/user');
 
 // API
-if(!process.env.API_URL || (!process.env.API_ID) || (!process.env.API_KEY)) {
+if (!process.env.API_URL || (!process.env.API_ID) || (!process.env.API_KEY)) {
     console.log('WARNING: Please export API credentials as environment variables');
 } else {
-   // console.log('API SETTINGS: OK');
+    //console.log('API SETTINGS: OK');
+    var config = require('../config/config');
+    var apiQuery = buildUrl(config);
+    //console.log(apiQuery);
 }
-
-var config = require('../config/config');
-console.log(config);
 
 module.exports = function (app, passport) {
 
-    app.get('/', function (req, res) {        
+    app.get('/', function (req, res) {
         if (req.isAuthenticated()) {
             return res.render('index_auth');
-        }
+        }        
         res.render('index');
     });
-    
-    app.post('/', function (req, res) {            
+
+    app.post('/', function (req, res) {
+        console.log('Query', apiQuery + req.body.search); // TODO: Sanitaze user input
         res.send(req.body.search);
     });
 
-    app.get('/login', function (req, res) {        
+    app.get('/login', function (req, res) {
         res.render('login', {
             message: req.flash('loginMessage')
         });
@@ -126,4 +129,20 @@ function isLoggedIn(req, res, next) {
         return next();
     // if user is not logged redirect to home page
     res.redirect('/');
+}
+
+// Build url query for the API
+function buildUrl(config) {
+    var query = '';
+    var position = 0;
+    for (var param in config.api) {
+        if (position === 0) {
+            query += Object.values(config.api)[position];
+        } else {
+            query += Object.keys(config.api)[position] + '=' + Object.values(config.api)[position] + '&';
+        }
+        position++;
+    }
+    //return query.slice(0, -1);
+    return query;
 }

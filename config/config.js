@@ -7,8 +7,7 @@ module.exports = {
         client_id: process.env.API_ID,
         client_secret: process.env.API_KEY,
         v: 20180101,
-        query: "bar",
-        near: "",
+        query: "bar",        
         limit: 10
     }
 };
