@@ -1,6 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var bcrypt = require('bcrypt-nodejs');
+var ajax = require('axios');
 var form = require('express-form2'),
     filter = form.filter,
     field = form.field,
@@ -30,13 +31,23 @@ module.exports = function (app, passport) {
     app.get('/', function (req, res) {
         if (req.isAuthenticated()) {
             return res.render('index_auth');
-        }        
+        }
         res.render('index');
     });
 
     app.post('/', function (req, res) {
-        console.log('Query', apiQuery + req.body.search); // TODO: Sanitaze user input
-        res.send(req.body.search);
+        if (!apiQuery) {
+            console.log('WARNING: Please export API credentials as environment variables');
+        } else {
+            console.log('Query', apiQuery + req.body.search); // TODO: Sanitaze user input
+            ajax.get(apiQuery + 'near=' + req.body.search).then(response => {
+                //console.log(response.data.response);
+                res.send(response.data.response);
+            }) .catch(error => { 
+                console.log(error);
+                return res.send('Error fetching API data');
+            });            
+        }
     });
 
     app.get('/login', function (req, res) {
