@@ -18,7 +18,7 @@ var User = require('../models/user');
 
 // API
 if (!process.env.API_URL || (!process.env.API_ID) || (!process.env.API_KEY)) {
-    console.log('WARNING: Please export API credentials as environment variables');
+    console.log('WARNING: Please export API credentials as environment variables !');
 } else {
     //console.log('API SETTINGS: OK');
     var config = require('../config/config');
@@ -37,18 +37,34 @@ module.exports = function (app, passport) {
 
     app.post('/', function (req, res) {
         if (!apiQuery) {
-            console.log('WARNING: Please export API credentials as environment variables');
+            console.log('WARNING: Please export API credentials as environment variables !');
+            return res.send('ERROR: No API credentials exported !')
         } else {
             console.log('Query', apiQuery + req.body.search); // TODO: Sanitaze user input
             ajax.get(apiQuery + 'near=' + req.body.search).then(response => {
                 //console.log(response.data.response);
-                res.send(response.data.response);
+                // Success
+                //res.send(response.data.response);
+                res.render('search', {                    
+                    result: response.data.response
+                });
+
             }) .catch(error => { 
                 console.log(error);
                 return res.send('Error fetching API data');
-            });            
+            });
         }
     });
+
+
+
+    app.get('/search', function (req, res) {
+        if (req.isAuthenticated()) {
+            return res.render('index_auth');
+        }
+        res.render('search');
+    });
+
 
     app.get('/login', function (req, res) {
         res.render('login', {

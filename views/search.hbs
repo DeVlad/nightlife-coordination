@@ -1,0 +1,19 @@
+<h2>Search results...</h2>
+
+{{#each result.venues}}
+
+<div>
+    {{name}}<br>
+    
+    {{#each categories }}
+        {{name}}<br>
+    {{/each}}
+    
+    {{location.formattedAddress}}<br>
+    {{contact.phone}}<br>    
+    {{url}}
+</div>
+<hr>
+
+
+{{/each}}
