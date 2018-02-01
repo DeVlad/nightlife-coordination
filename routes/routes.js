@@ -45,7 +45,7 @@ module.exports = function (app, passport) {
                 //console.log(response.data.response);
                 // Success
                 //res.send(response.data.response);
-                res.render('search', {                    
+                res.render('search', {
                     result: response.data.response
                 });
 

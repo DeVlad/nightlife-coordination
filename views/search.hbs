@@ -1,19 +1,15 @@
 <h2>Search results...</h2>
 
-{{#each result.venues}}
-
-<div>
-    {{name}}<br>
-    
-    {{#each categories }}
-        {{name}}<br>
-    {{/each}}
-    
-    {{location.formattedAddress}}<br>
-    {{contact.phone}}<br>    
-    {{url}}
+<div class="row display-flex">
+    {{#each result.venues}}
+    <div class="col- col-sm-6 col-md-4">
+        <strong>{{name}}</strong>
+        <span>{{#each categories}}{{name}}{{/each}}</span>
+        <a href="#"><img src="http://via.placeholder.com/320x240"></a>
+        {{location.formattedAddress}}
+        <br> {{contact.phone}}
+        <br> {{url}}
+        <br><br>
+    </div>
+    {{/each}}    
 </div>
-<hr>
-
-
-{{/each}}
