@@ -40,7 +40,7 @@ module.exports = function (app, passport) {
             console.log('WARNING: Please export API credentials as environment variables !');
             return res.send('ERROR: No API credentials exported !')
         } else {
-            console.log('Query', apiQuery + req.body.search); // TODO: Sanitaze user input
+            //console.log('Query', apiQuery + req.body.search); // TODO: Sanitaze user input
             ajax.get(apiQuery + 'near=' + req.body.search).then(response => {
                 //console.log(response.data.response);
                 // Success
@@ -55,7 +55,6 @@ module.exports = function (app, passport) {
             });
         }
     });
-
 
 
     app.get('/search', function (req, res) {

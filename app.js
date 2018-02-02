@@ -11,14 +11,37 @@ var flash = require('connect-flash');
 var mongoose = require('mongoose');
 
 // Database
+var db = mongoose.connection;
 var uri = 'mongodb://localhost/nightlife';
-var options = {};
+var options = {
+    autoReconnect: true,
+    keepAlive: 1,
+    connectTimeoutMS: 30000
+};
 
-mongoose.connect(uri, options, function(error) {
-    if(!error) {
-        console.log('Database connection established');
-    }
+db.on('connecting', function () {
+    console.log('Connecting to:', uri);
 });
+
+db.on('connected', function () {
+    console.log('Database connection established.');
+});
+
+db.on('error', function () {
+    console.error('Database connection failed!');
+    mongoose.disconnect();
+});
+
+db.on('disconnected', function () {
+    console.log('Disconnected from:', uri);
+    mongoose.connect(uri, options);
+});
+
+db.on('reconnected', function () {
+    console.log('Reconnected to database.');
+});
+
+mongoose.connect(uri, options);
 
 // Passport Auth
 require('./config/passport')(passport);
@@ -72,4 +95,4 @@ app.use(function (err, req, res, next) {
     }
 });
 
-app.listen(port, console.log('Listening on port:', port));
+app.listen(port, console.log('Web server is listening on port:', port));
