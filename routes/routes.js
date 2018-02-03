@@ -40,16 +40,25 @@ module.exports = function (app, passport) {
             console.log('WARNING: Please export API credentials as environment variables !');
             return res.send('ERROR: No API credentials exported !')
         } else {
+            var apiResponse = {};
             //console.log('Query', apiQuery + req.body.search); // TODO: Sanitaze user input
             ajax.get(apiQuery + 'near=' + req.body.search).then(response => {
                 //console.log(response.data.response);
                 // Success
                 //res.send(response.data.response);
+                //console.log(response.data.response.venues);                
+                apiResponse = response.data.response;
+            }).then( () => {
+                // Collect venue ids for pictures api 
+                /*for(var venue of response.data.response.venues ){
+                    console.log(venue.id);
+                } */
+                
                 res.render('search', {
-                    result: response.data.response
+                    result: apiResponse
                 });
-
-            }) .catch(error => { 
+            
+           }).catch(error => {
                 console.log(error);
                 return res.send('Error fetching API data');
             });

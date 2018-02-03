@@ -5,10 +5,9 @@
     <div class="col- col-sm-6 col-md-4">
         <strong>{{name}}</strong>
         <span>{{#each categories}}{{name}}{{/each}}</span>
-        <a href="#"><img src="http://via.placeholder.com/320x240"></a>
+        <a href="{{url}}"><img src="http://via.placeholder.com/320x240"></a>
         {{location.formattedAddress}}
-        <br> {{contact.phone}}
-        <br> {{url}}
+        <br> {{contact.phone}}        
         <br><br>
     </div>
     {{/each}}    
