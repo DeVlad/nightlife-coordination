@@ -2,13 +2,21 @@
 
 <div class="row display-flex">
     {{#each result.venues}}
+
     <div class="col- col-sm-6 col-md-4">
+        <div>{{id}}</div>
         <strong>{{name}}</strong>
         <span>{{#each categories}}{{name}}{{/each}}</span>
         <a href="{{url}}"><img src="http://via.placeholder.com/320x240"></a>
         {{location.formattedAddress}}
-        <br> {{contact.phone}}        
+        <br> {{contact.phone}}
         <br><br>
     </div>
     {{/each}}    
 </div>
+
+<!-- TODO dynamic api call with handlebars. key needs to be hidden -->
+<script>
+    var test = '{{result.venues}}';
+    console.log(test);
+</script>

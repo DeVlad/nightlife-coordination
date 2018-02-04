@@ -41,24 +41,34 @@ module.exports = function (app, passport) {
             return res.send('ERROR: No API credentials exported !')
         } else {
             var apiResponse = {};
+            var venueIds = [];
             //console.log('Query', apiQuery + req.body.search); // TODO: Sanitaze user input
-            ajax.get(apiQuery + 'near=' + req.body.search).then(response => {
-                //console.log(response.data.response);
-                // Success
-                //res.send(response.data.response);
-                //console.log(response.data.response.venues);                
-                apiResponse = response.data.response;
-            }).then( () => {
+            ajax.get(apiQuery + 'near=' + req.body.search).then(response => {                
+                // Success                   
                 // Collect venue ids for pictures api 
-                /*for(var venue of response.data.response.venues ){
-                    console.log(venue.id);
-                } */
+                for(var venue of response.data.response.venues){                    
+                    venueIds.push(venue.id);
+                }
                 
+                apiResponse = response.data.response;
+                
+            }).then(() => {
+                // Get venue picture links
+                for(var venueId of venueIds){
+                    var venueUrl = "https://api.foursquare.com/v2/venues/" + venueId + "?client_id=" + config.api.client_id + "&client_secret=" + config.api.client_secret + "&v=20180101";
+                    
+                    ajax.get(venueUrl).then(response => {
+                        // Success
+                        console.log(response.data.response.venue.bestPhoto);
+                    });
+                }
+                
+                // Render results page
                 res.render('search', {
                     result: apiResponse
                 });
-            
-           }).catch(error => {
+
+            }).catch(error => {
                 console.log(error);
                 return res.send('Error fetching API data');
             });
