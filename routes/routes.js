@@ -38,37 +38,20 @@ module.exports = function (app, passport) {
     app.post('/', function (req, res) {
         if (!apiQuery) {
             console.log('WARNING: Please export API credentials as environment variables !');
-            return res.send('ERROR: No API credentials exported !')
+            return res.send('ERROR: No API credentials exported !');
         } else {
             var apiResponse = {};
-            var venueIds = [];            
-            //console.log('Query', apiQuery + req.body.search); // TODO: Sanitaze user input
+
+            // TODO: Sanitaze user input
             ajax.get(apiQuery + 'near=' + req.body.search).then(response => {
-                // Success                   
-                // Collect venue ids for pictures api 
-                for(var venue of response.data.response.venues){            
-                    venueIds.push(venue.id);
-                }
-                
+                // Success
                 apiResponse = response.data.response;
-                //console.log(apiResponse.venues[0]);
-                
+                //console.log(apiResponse.venues);
+
             }).then(() => {
-                // Get venue picture links
-                // default picture link '../img/cocktail.png'
-                for(var venueId of venueIds){
-                    var venueUrl = "https://api.foursquare.com/v2/venues/" + venueId + "?client_id=" + config.api.client_id + "&client_secret=" + config.api.client_secret + "&v=20180101";
-                    
-                    ajax.get(venueUrl).then(response => {
-                        // Success
-                        //console.log(response.data.response.venue.bestPhoto.prefix + '320x240' + response.data.response.venue.bestPhoto.suffix );
-                       // console.log(response.data.response.venue.bestPhoto);                        
-                    });
-                }
-                
                 // Render results page
                 res.render('search', {
-                    result: apiResponse,                    
+                    result: apiResponse                    
                 });
 
             }).catch(error => {
@@ -77,7 +60,6 @@ module.exports = function (app, passport) {
             });
         }
     });
-
 
     app.get('/search', function (req, res) {
         if (req.isAuthenticated()) {
