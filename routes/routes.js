@@ -19,11 +19,9 @@ var User = require('../models/user');
 // API
 if (!process.env.API_URL || (!process.env.API_ID) || (!process.env.API_KEY)) {
     console.log('WARNING: Please export API credentials as environment variables !');
-} else {
-    //console.log('API SETTINGS: OK');
+} else {    
     var config = require('../config/config');
-    var apiQuery = buildUrl(config);
-    //console.log(apiQuery);
+    var apiQuery = buildUrl(config);    
 }
 
 module.exports = function (app, passport) {
@@ -45,17 +43,16 @@ module.exports = function (app, passport) {
             // TODO: Sanitaze user input
             ajax.get(apiQuery + 'near=' + req.body.search).then(response => {
                 // Success
-                apiResponse = response.data.response;
-                //console.log(apiResponse.venues);
+                apiResponse = response.data.response;            
 
             }).then(() => {
                 // Render results page
                 res.render('search', {
-                    result: apiResponse                    
+                    result: apiResponse
                 });
 
             }).catch(error => {
-                console.log(error);
+                //console.log(error);
                 return res.send('Error fetching API data');
             });
         }
@@ -63,11 +60,24 @@ module.exports = function (app, passport) {
 
     app.get('/search', function (req, res) {
         if (req.isAuthenticated()) {
-            return res.render('index_auth');
+            return res.render('index_auth'); // TODO: auth search
         }
         res.render('search');
     });
 
+    app.post('/picture/:vid', function (req, res) {
+        var venueId = req.params.vid;
+        var venueUrl = "https://api.foursquare.com/v2/venues/" + venueId + "?client_id=" + config.api.client_id + "&client_secret=" + config.api.client_secret + "&v=" + config.api.v;
+        
+        ajax.get(venueUrl).then(response => {
+            var pictureUrl = response.data.response.venue.bestPhoto.prefix + '320x240' + response.data.response.venue.bestPhoto.suffix;
+            var jsonResponse = {url: pictureUrl};
+            res.send(jsonResponse);
+        }).catch(error => {
+            //console.log(error);
+            return res.send('{url: "/img/cocktail.png"}'); //TODO: Move to config object
+        });
+    });
 
     app.get('/login', function (req, res) {
         res.render('login', {

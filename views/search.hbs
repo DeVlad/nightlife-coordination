@@ -11,17 +11,33 @@
 {{>nav}}
 
 <div class="row display-flex">
-    {{picurl}}
     {{#each result.venues}}
-    
-
     <div class="col- col-sm-6 col-md-4">
-        <div>{{id}}</div>
         <strong>{{name}}</strong>
         <span>{{#each categories}}{{name}}{{/each}}</span>
-        <a href="{{url}}"><img src="http://via.placeholder.com/320x240" class="img-responsive"></a> {{location.formattedAddress}}
-        <br> {{contact.phone}}
+        <div id="pid-{{id}}" class="img-placeholder"></div>
+        {{location.formattedAddress}}
+        <br>{{contact.phone}}
         <br><br>
     </div>
     {{/each}}
 </div>
+
+<script>
+    var imagePlaceholders = document.getElementsByClassName('img-placeholder');
+
+    function fetchPicture(url, placeholderId) {
+        $.post(url, function(response) {
+            var imgTag = '<img src="' + response.url + '" class="img-responsive" />';            
+            $(placeholderId).append(imgTag);
+        }, 'json');
+    }
+
+    for (var placeholder of imagePlaceholders) {
+        var pictureId = placeholder.id.slice(4);
+        var url = window.location.origin + '/picture/' + pictureId;
+        var placeholderId = '#pid-' + pictureId;
+        fetchPicture(url, placeholderId);
+    }
+
+</script>

@@ -28,7 +28,7 @@ db.on('connected', function () {
 });
 
 db.on('error', function () {
-    console.error('Database connection failed!');
+    console.log('Database connection failed!');
     mongoose.disconnect();
 });
 
