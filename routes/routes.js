@@ -19,9 +19,9 @@ var User = require('../models/user');
 // API
 if (!process.env.API_URL || (!process.env.API_ID) || (!process.env.API_KEY)) {
     console.log('WARNING: Please export API credentials as environment variables !');
-} else {    
+} else {
     var config = require('../config/config');
-    var apiQuery = buildUrl(config);    
+    var apiQuery = buildUrl(config);
 }
 
 module.exports = function (app, passport) {
@@ -43,7 +43,7 @@ module.exports = function (app, passport) {
             // TODO: Sanitaze user input
             ajax.get(apiQuery + 'near=' + req.body.search).then(response => {
                 // Success
-                apiResponse = response.data.response;            
+                apiResponse = response.data.response;
 
             }).then(() => {
                 // Render results page
@@ -68,14 +68,26 @@ module.exports = function (app, passport) {
     app.post('/picture/:vid', function (req, res) {
         var venueId = req.params.vid;
         var venueUrl = "https://api.foursquare.com/v2/venues/" + venueId + "?client_id=" + config.api.client_id + "&client_secret=" + config.api.client_secret + "&v=" + config.api.v;
-        
+
         ajax.get(venueUrl).then(response => {
-            var pictureUrl = response.data.response.venue.bestPhoto.prefix + '320x240' + response.data.response.venue.bestPhoto.suffix;
-            var jsonResponse = {url: pictureUrl};
+            if (response.data.response.venue.bestPhoto) {
+                var pictureUrl = response.data.response.venue.bestPhoto.prefix + config.picture.resolution + response.data.response.venue.bestPhoto.suffix;
+                var jsonResponse = {
+                    url: pictureUrl
+                };
+            } else { // Picture not found
+                var jsonResponse = {
+                    url: config.picture.defaultVenuePicture
+                };
+            }
             res.send(jsonResponse);
+
         }).catch(error => {
             //console.log(error);
-            return res.send('{url: "/img/cocktail.png"}'); //TODO: Move to config object
+            var jsonResponse = {
+                url: config.picture.defaultVenuePicture
+            };
+            return res.send(jsonResponse);
         });
     });
 
