@@ -1,7 +1,6 @@
 // Configuration
 
-module.exports = {
-    baseUrl: "http://localhost:8000/",
+module.exports = {    
     api: {
         url: process.env.API_URL,
         client_id: process.env.API_ID,

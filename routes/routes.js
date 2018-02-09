@@ -46,9 +46,9 @@ module.exports = function (app, passport) {
                 apiResponse = response.data.response;
 
             }).then(() => {
-                // Render results page
+                // Render results page                
                 res.render('search', {
-                    result: apiResponse
+                    result: apiResponse,                    
                 });
 
             }).catch(error => {
@@ -65,7 +65,7 @@ module.exports = function (app, passport) {
         res.render('search');
     });
 
-    app.post('/picture/:vid', function (req, res) {
+    app.post('/venue/picture/:vid', function (req, res) {
         var venueId = req.params.vid;
         var venueUrl = "https://api.foursquare.com/v2/venues/" + venueId + "?client_id=" + config.api.client_id + "&client_secret=" + config.api.client_secret + "&v=" + config.api.v;
 
@@ -89,6 +89,10 @@ module.exports = function (app, passport) {
             };
             return res.send(jsonResponse);
         });
+    });
+    
+    app.get('/venue/:vid', function (req, res) {
+        res.render('venue');
     });
 
     app.get('/login', function (req, res) {
