@@ -1,2 +1,18 @@
 {{>nav}}
 <h2>Venue details</h2>
+
+<div class="row">
+    {{venue.name}}<br>
+    {{venue.location.country}}<br>
+    {{venue.location.city}}<br>
+    
+    {{venue.location.address}}<br>
+    {{venue.contact.formattedPhone}}<br>    
+    
+    {{venue.description}}<br>
+    
+    Rating: {{venue.rating}}<br>
+    Likes: {{venue.likes.count}}<br>
+    {{venue.url}}<br>
+    Location: http://www.google.com/maps/place/{{venue.location.lat}},{{venue.location.lng}}<br>
+</div>
