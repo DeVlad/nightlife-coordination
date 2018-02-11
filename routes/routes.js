@@ -65,6 +65,7 @@ app.get('/search', function (req, res) {
     res.render('search');
 });
 
+// Fetch venue picture
 app.post('/venue/picture/:vid', function (req, res) {
     var venueId = req.params.vid;
     var venueUrl = "https://api.foursquare.com/v2/venues/" + venueId + "?client_id=" + config.api.client_id + "&client_secret=" + config.api.client_secret + "&v=" + config.api.v;
@@ -90,6 +91,39 @@ app.post('/venue/picture/:vid', function (req, res) {
         return res.send(jsonResponse);
     });
 });
+    
+// Fetch all venue pictures
+app.post('/venue/pictures/:vid', function (req, res) {
+    var venueId = req.params.vid;
+    var venueUrl = "https://api.foursquare.com/v2/venues/" + venueId + "/photos?client_id=" + config.api.client_id + "&client_secret=" + config.api.client_secret + "&v=" + config.api.v;
+    
+    ajax.get(venueUrl).then(response => {        
+        if (response.data.response.photos.count > 0) {
+            var apiPhotos = response.data.response.photos.items;
+            var photoUrls = [];
+            for(var photo of apiPhotos) {
+	           photoUrls.push(photo.prefix + photo.width + 'x' + photo.height + photo.suffix);
+                //photoUrls.push(photo.prefix +  config.picture.resolution + photo.suffix);
+            }
+            
+            var jsonResponse = {
+                pictures: photoUrls
+            };
+        } else { // Picture not found
+            var jsonResponse = {
+                pictures: [config.picture.defaultVenuePicture]
+            };
+        }        
+        res.send(jsonResponse);
+
+    }).catch(error => {        
+        var jsonResponse = {
+            pictures: [config.picture.defaultVenuePicture]
+        };
+        return res.send(jsonResponse);
+    });
+});  
+
 
 app.get('/venue/:vid', function (req, res) {
     var venueId = req.params.vid;

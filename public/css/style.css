@@ -7,3 +7,20 @@
     display: flex;
     flex-direction: column;
 }
+
+#myCarousel {
+    width: 50%;
+    
+    
+   
+}
+
+.carousel-image {
+    display: block;
+  width: 100%;
+    height: auto;
+}
+/*.carousel-inner{
+  width: 320px;
+  height: 240px;
+}*/
