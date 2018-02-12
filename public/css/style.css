@@ -9,18 +9,14 @@
 }
 
 #myCarousel {
-    width: 50%;
-    
-    
-   
+    background-color: black;
+    width: 320px;
+    height: 240px;
 }
 
 .carousel-image {
-    display: block;
-  width: 100%;
-    height: auto;
+    display:block;
+    margin: 0 auto;
+    max-height: 240px;
+    max-width:100%;
 }
-/*.carousel-inner{
-  width: 320px;
-  height: 240px;
-}*/
