@@ -2,14 +2,16 @@
     {{#if result.venues}} {{#each result.venues}}
     <div class="col- col-sm-6 col-md-4">
         <strong>{{name}}</strong>
-        <span>{{#each categories}}{{name}}{{/each}}</span>
+        <span>{{#each categories}}{{name}}&nbsp;&nbsp;{{/each}}</span>
         <a href="/venue/{{id}}">
             <div id="pid-{{id}}" class="img-placeholder"></div>
         </a>
+        <div id="ph-{{id}}" class="btn-placeholder"></div>
         {{location.formattedAddress}}
         <br>{{contact.phone}}
         <br><br>
-    </div>
+    </div>    
+    
     {{/each}}
     {{/if}}
     {{#if message}}
@@ -17,3 +19,21 @@
     {{/if}}
 </div>
 <script src="/js/search.js"></script>
+
+
+{{#if user}}
+<script>
+var btnPlaceholders = document.getElementsByClassName('btn-placeholder');
+// <button onclick="alert('clicked')">Going <span class="badge">0</span></button>
+    
+for (var btnPlaceholder of btnPlaceholders) {
+    var btnId = btnPlaceholder.id.slice(3);
+    var link = window.location.origin + '/venue/visitors/' + btnId;
+    var btnPlaceholderId = '#pid-' + btnId;
+    console.log(link);
+    //fetchVenueVisitors(link, btnPlaceholderId);
+}
+</script>
+{{/if}}
+
+    
