@@ -28,7 +28,8 @@ var UserSchema = new Schema({
     },
     search: {
         type: String,
-        max: [72, 'Search term is limited to 72 characters']
+        max: [72, 'Search term is limited to 72 characters'],
+        default: ""
     },
     venues: [],    
 

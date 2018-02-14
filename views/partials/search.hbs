@@ -10,8 +10,10 @@
         <br>{{contact.phone}}
         <br><br>
     </div>
-    {{/each}} {{/if}} {{#unless result.venues}}
-    <div class="col- col-sm-6 col-md-4"><strong>No venues found !</strong></div>
-    {{/unless}}
+    {{/each}}
+    {{/if}}
+    {{#if message}}
+    <div class="col- col-sm-6 col-md-4"><strong>{{message}}</strong></div>
+    {{/if}}
 </div>
 <script src="/js/search.js"></script>

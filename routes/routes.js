@@ -49,12 +49,17 @@ module.exports = function (app, passport) {
                 // Render results page                
                 res.render('search', {
                     result: apiResponse,
+                    searched: req.body.search
                 });
 
             }).catch(error => {
                 //console.log(error);
                 //return res.send('Error fetching API data');
-                res.render('search');
+                // venue not found
+                res.render('search', {
+                    message: 'No venues found !',
+                    searched: req.body.search
+                });                    
             });
         }
     });
@@ -67,8 +72,8 @@ module.exports = function (app, passport) {
     });
     
     // Latest venue search
-    app.get('/last', function (req, res) {
-        if (req.isAuthenticated() && req.user.search.length > 0) {
+    app.get('/last', function (req, res) {        
+        if (req.isAuthenticated() && req.user.search !== undefined && req.user.search.length > 0) {            
             var lastSearch = req.user.search;
             var apiResponse = {};
 
@@ -77,6 +82,7 @@ module.exports = function (app, passport) {
             }).then(() => {
                 res.render('search', {
                     result: apiResponse,
+                    searched: lastSearch
                 });
             }).catch(error => {
                 res.render('search');
