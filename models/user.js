@@ -26,7 +26,11 @@ var UserSchema = new Schema({
         max: [72, 'Encrypted password is limited to 72 characters'],
         required: [true, 'Pasword is required']
     },
-    venues: [],
+    search: {
+        type: String,
+        max: [72, 'Search term is limited to 72 characters']
+    },
+    venues: [],    
 
 }, {
     versionKey: false

@@ -74,6 +74,12 @@ app.use(passport.initialize());
 // Persistent login sessions
 app.use(passport.session());
 
+// Expose user account info to template engine
+app.use(function(req, res, next){
+  res.locals.user = req.user;  
+  next();
+});
+
 // Flash messages stored in session
 app.use(flash());
 

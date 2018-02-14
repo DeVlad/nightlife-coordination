@@ -1,5 +1,5 @@
 <div class="row display-flex">
-    {{#each result.venues}}
+    {{#if result.venues}} {{#each result.venues}}
     <div class="col- col-sm-6 col-md-4">
         <strong>{{name}}</strong>
         <span>{{#each categories}}{{name}}{{/each}}</span>
@@ -10,7 +10,8 @@
         <br>{{contact.phone}}
         <br><br>
     </div>
-    {{/each}}
+    {{/each}} {{/if}} {{#unless result.venues}}
+    <div class="col- col-sm-6 col-md-4"><strong>No venues found !</strong></div>
+    {{/unless}}
 </div>
-
 <script src="/js/search.js"></script>

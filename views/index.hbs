@@ -19,6 +19,7 @@
         <div class="col col-md-2"></div>
     </div>
 
+    {{#unless user}}
     <div class="row text-center">
         <div class="col">
             <form action="/login">
@@ -32,3 +33,4 @@
         </div>
     </div>
 </div>
+{{/unless}}
