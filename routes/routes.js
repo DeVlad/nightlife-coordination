@@ -65,6 +65,26 @@ module.exports = function (app, passport) {
         }*/
         res.render('search');
     });
+    
+    // Latest venue search
+    app.get('/last', function (req, res) {
+        if (req.isAuthenticated() && req.user.search.length > 0) {
+            var lastSearch = req.user.search;
+            var apiResponse = {};
+
+            ajax.get(apiQuery + 'near=' + lastSearch).then(response => {
+                apiResponse = response.data.response;
+            }).then(() => {
+                res.render('search', {
+                    result: apiResponse,
+                });
+            }).catch(error => {
+                res.render('search');
+            });
+        } else {
+            res.render('search');
+        }
+    });
 
     // Fetch venue picture
     app.post('/venue/picture/:vid', function (req, res) {
@@ -125,7 +145,6 @@ module.exports = function (app, passport) {
         });
     });
 
-
     app.get('/venue/:vid', function (req, res) {
         var venueId = req.params.vid;
         var venueUrl = "https://api.foursquare.com/v2/venues/" + venueId + "?client_id=" + config.api.client_id + "&client_secret=" + config.api.client_secret + "&v=" + config.api.v;
@@ -157,7 +176,7 @@ module.exports = function (app, passport) {
 
     app.post('/login', passport.authenticate('local-login', {
             failureRedirect: '/login',
-            successRedirect: '/profile',
+            successRedirect: '/last',
             failureFlash: true // Allow flash messages
         }),
         function (req, res) {

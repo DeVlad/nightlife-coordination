@@ -1,21 +1,29 @@
 {{>nav}}
-<div class="row">
-    <form action="/login" method="post">
-        <div class="row">
-            <div class="form-group col col-sm-12">
-                <input type="email" name="email" class="validate" value="test@example.com">
-                <label for="email">Email</label>
+<div class="container">
+    <div class="row">
+        <form action="/login" method="post">
+            <div class="col col-sm-6 col-md-4 input-group input-group-lg">
+                <span class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span>
+                </span>
+                <input class="form-control" type="email" name="email" value="test@example.com" placeholder="Email address">
             </div>
-        </div>
-        <div class="row">
-            <div class="form-group col col-sm-12">
-                <input type="password" name="password" class="validate" value="12345678" required aria-required="true">
-                <label for="password">Password</label>
-            </div>
-        </div>
-        <input type="submit" id="login-btn" class="btn waves-effect waves-light" value="Login">
-    </form>
+            <div class="col col-sm-6 col-md-4 input-group input-group-lg">
+                <span class="input-group-addon"> <span class="glyphicon glyphicon-lock"></span></span>
+                <input class="form-control" type="password" name="password" value="12345678" required aria-required="true" placeholder="Password">
+            </div><br>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+        {{#if message}}
+        <br>
+        <div class="col-sm-2 bg-danger text-white text-center" id="fail-alert"><strong>{{message}}</strong></div>
+        <script>
+            $(document).ready(function() {
+                $("#fail-alert").fadeTo(4000, 500).slideUp(500, function() {
+                    $("#fail-alert").slideUp(500);
+                });
+            });
+
+        </script>
+        {{/if}}
+    </div>
 </div>
-{{#if message}}
-<div class="alert">{{message}}</div>
-{{/if}}

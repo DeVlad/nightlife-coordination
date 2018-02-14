@@ -1,37 +1,39 @@
 {{>nav}}
-<div class="row">
-    <form action="/signup" method="post">
-        <div class="row">
-            <div class="form-group col col-sm-12 col-md-4">
-                <input type="text" name="firstName" id="first_name" class="form-control" pattern="^[A-z]+$" required aria-required="true">
-                <label for="first_name">First Name</label>
+<div class="container">
+    <div class="row">
+        <form action="/signup" method="post">
+            <div class="row">
+                <div class="form-group col col-sm-12 col-md-4">
+                    <input type="text" name="firstName" id="first_name" class="form-control" pattern="^[A-z]+$" required aria-required="true">
+                    <label for="first_name">First Name</label>
+                </div>
+
+                <div class="form-group col col-sm-12 col-md-4">
+                    <input type="text" name="lastName" id="last_name" class="form-control" pattern="^[A-z]+$" required aria-required="true">
+                    <label for="first_name">Last Name</label>
+                </div>
             </div>
 
-            <div class="form-group col col-sm-12 col-md-4">
-                <input type="text" name="lastName" id="last_name" class="form-control" pattern="^[A-z]+$" required aria-required="true">
-                <label for="first_name">Last Name</label>
+            <div class="row">
+                <div class="form-group col col-sm-12 col-md-4">
+                    <input type="email" name="email" id="email" class="form-control" required aria-required="true">
+                    <label for="email">Email</label>
+                </div>
             </div>
-        </div>
-
-        <div class="row">
-            <div class="form-group col col-sm-12 col-md-4">
-                <input type="email" name="email" id="email" class="form-control" required aria-required="true">
-                <label for="email">Email</label>
+            <div class="row">
+                <div class="form-group col col-sm-12 col-md-4">
+                    <input type="password" name="password" class="form-control" required aria-required="true">
+                    <label for="password">Password</label>
+                </div>
+                <div class="form-group col col-sm-12 col-md-4">
+                    <input type="password" name="rpassword" class="form-control" required aria-required="true">
+                    <label for="rpassword">Confirm password</label>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="form-group col col-sm-12 col-md-4">
-                <input type="password" name="password" class="form-control" required aria-required="true">
-                <label for="password">Password</label>
-            </div>
-            <div class="form-group col col-sm-12 col-md-4">
-                <input type="password" name="rpassword" class="form-control" required aria-required="true">
-                <label for="rpassword">Confirm password</label>
-            </div>
-        </div>
-        <input type="submit" id="login-btn" class="btn waves-effect waves-light" onclick="" value="Sign Up">
-    </form>
+            <input type="submit" id="login-btn" class="btn waves-effect waves-light" onclick="" value="Sign Up">
+        </form>
+    </div>
+    {{#if message}}
+    <div class="alert">{{message}}</div>
+    {{/if}}
 </div>
-{{#if message}}
-<div class="alert">{{message}}</div>
-{{/if}}
