@@ -1,6 +1,6 @@
 <div class="row display-flex">
     {{#if result.venues}} {{#each result.venues}}
-    <div class="col- col-sm-6 col-md-4">
+    <div class="col- col-sm-6 col-md-4 card">
         <strong>{{name}}</strong>
         <span>{{#each categories}}{{name}}&nbsp;&nbsp;{{/each}}</span>
         <a href="/venue/{{id}}">

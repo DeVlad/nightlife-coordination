@@ -20,3 +20,33 @@
     max-height: 240px;
     max-width:100%;
 }
+
+body {
+    background-image: url('../img/2.jpg'); 
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+.card {
+    background-color: white;
+    border-radius: 4px;
+    margin-bottom: 6px;
+}
+
+.white {
+    color: white;
+}
+
+label {
+    background: white;
+}
+
+.fancy {
+    display: inline-block;
+    font-family: 'Codystar', cursive;
+    font-size: 60px;
+    color: #fd487c;    
+    background: rgba(0, 0, 0, .7);
+}

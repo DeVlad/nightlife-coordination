@@ -1,17 +1,17 @@
 {{>nav}}
-<h2>Venue details</h2>
+<h2 class="white">Venue details</h2>
 
 <div class="row">
-    {{venue.name}}<br>
-    {{>carousel}}
-    {{venue.location.country}}
-    
-    <br> {{venue.location.city}}
-    <br> {{venue.location.address}}
+    <div class="col- col-md-4 card">
+        {{venue.name}}<br> {{>carousel}} {{venue.location.country}}
 
-    <br> {{venue.contact.formattedPhone}}
-    <br> {{venue.description}}
+        <br> {{venue.location.city}}
+        <br> {{venue.location.address}} <a target="_blank" href="http://www.google.com/maps/place/{{venue.location.lat}},{{venue.location.lng}}"><span class="glyphicon glyphicon-map-marker"></span></a>
 
-    <br> Rating: {{venue.rating}}<br> Likes: {{venue.likes.count}}<br> {{venue.url}}
-    <br> Location: http://www.google.com/maps/place/{{venue.location.lat}},{{venue.location.lng}}<br>
+        <br> {{venue.contact.formattedPhone}}
+        <br> {{venue.description}}
+
+        <br> Likes: {{venue.likes.count}} Rating: {{venue.rating}}<br>
+        <a target="_blank" href="{{venue.url}}">Website</a>
+    </div>
 </div>
