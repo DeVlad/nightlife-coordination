@@ -15,14 +15,14 @@
 }
 
 .carousel-image {
-    display:block;
+    display: block;
     margin: 0 auto;
     max-height: 240px;
-    max-width:100%;
+    max-width: 100%;
 }
 
 body {
-    background-image: url('../img/2.jpg'); 
+    background-image: url('../img/2.jpg');
     background-position: center center;
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -30,9 +30,12 @@ body {
 }
 
 .card {
-    background-color: white;
+    background-color: #f9fbe7;
     border-radius: 4px;
     margin-bottom: 6px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border: 1px solid #fd487c;
 }
 
 .white {
@@ -47,6 +50,17 @@ label {
     display: inline-block;
     font-family: 'Codystar', cursive;
     font-size: 60px;
-    color: #fd487c;    
+    color: #fd487c;
+    background: rgba(0, 0, 0, .7);
+}
+
+.handwrite {
+    font-family: 'Bad Script', cursive;
+}
+
+.backlight {
+    margin-left: 21%;
+    margin-right: 21%;
+    padding-bottom: 8px;
     background: rgba(0, 0, 0, .7);
 }

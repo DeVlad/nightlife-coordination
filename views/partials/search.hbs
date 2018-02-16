@@ -1,3 +1,4 @@
+<div class="container">
 <div class="row display-flex">
     {{#if result.venues}} {{#each result.venues}}
     <div class="col- col-sm-6 col-md-4 card">
@@ -10,13 +11,14 @@
         {{location.formattedAddress}}
         <br>{{contact.phone}}
         <br><br>
-    </div>    
+    </div> 
     
     {{/each}}
     {{/if}}
     {{#if message}}
     <div class="col- col-sm-6 col-md-4"><strong>{{message}}</strong></div>
     {{/if}}
+</div>
 </div>
 <script src="/js/search.js"></script>
 

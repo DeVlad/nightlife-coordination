@@ -15,5 +15,11 @@
             <li class="nav-item float-right"><a href="/logout">Logout</a></li>
         </ul>
         {{/if}}
+        {{#unless user}}
+        <ul class="nav navbar-nav navbar-right">
+            <li class="nav-item float-right"><a href="/login">Login</a></li>
+            <li class="nav-item float-right"><a href="/signup">Signup</a></li>
+        </ul>
+        {{/unless}}
     </div>
 </nav>

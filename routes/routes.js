@@ -15,6 +15,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 var User = require('../models/user');
+var Venue = require('../models/venue');
 
 // API
 if (!process.env.API_URL || (!process.env.API_ID) || (!process.env.API_KEY)) {
@@ -30,7 +31,11 @@ module.exports = function (app, passport) {
         res.render('index');
     });
 
-    app.post('/', function (req, res) {
+    app.get('/search', function (req, res) {
+        res.render('search');
+    });
+
+    app.post('/search', function (req, res) {
         if (!apiQuery) {
             console.log('WARNING: Please export API credentials as environment variables !');
             return res.send('ERROR: No API credentials exported !');
@@ -59,21 +64,14 @@ module.exports = function (app, passport) {
                 res.render('search', {
                     message: 'No venues found !',
                     searched: req.body.search
-                });                    
+                });
             });
         }
     });
 
-    app.get('/search', function (req, res) {
-        /*if (req.isAuthenticated()) {
-            return res.render('index_auth');
-        }*/
-        res.render('search');
-    });
-    
     // Latest venue search
-    app.get('/last', function (req, res) {        
-        if (req.isAuthenticated() && req.user.search !== undefined && req.user.search.length > 0) {            
+    app.get('/last', function (req, res) {
+        if (req.isAuthenticated() && req.user.search !== undefined && req.user.search.length > 0) {
             var lastSearch = req.user.search;
             var apiResponse = {};
 
@@ -171,6 +169,38 @@ module.exports = function (app, passport) {
             return res.send('Error fetching API data');
         });
 
+    });
+
+    app.get('/venue/:vid/visitors', function (req, res) {        
+        var venueId = req.params.vid;    
+        var jsonResponse = {"visitors": 0};
+        
+        Venue.findById(venueId, function (err, venue) {
+            console.log("Find venue: ", venueId);
+            if (err) throw err;
+            if(venue && venue.visitors > 0) {
+                jsonResponse = {"visitors": venue.visitors};
+                res.send(jsonResponse);
+            } else {
+                res.send(jsonResponse);
+            }
+        });        
+    });
+    
+    app.post('/venue/:vid/visitors', function (req, res) {
+        var venueId = req.params.vid;
+        console.log("User info:", req.user);
+        
+        Venue.findById(venueId, function (err, venue) {
+            console.log("Find venue: ", venueId);
+            if (err) throw err;
+            
+            if(venue) { // Venue exist in db
+                res.send('Venue exist in database');
+            } else { // Save venue visitor
+                res.send('Save venue');
+            }
+        });        
     });
 
 
