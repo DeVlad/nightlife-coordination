@@ -171,38 +171,45 @@ module.exports = function (app, passport) {
 
     });
 
-    app.get('/venue/:vid/visitors', function (req, res) {        
-        var venueId = req.params.vid;    
-        var jsonResponse = {"visitors": 0};
-        
+    // Visitors count
+    //TODO: Only for authenticated users, use database
+    app.get('/venue/:vid/visitors', function (req, res) {
+        var venueId = req.params.vid;
+        var jsonResponse = {
+            "venueId": venueId,
+            "visitors": 0
+        };
+
         Venue.findById(venueId, function (err, venue) {
             console.log("Find venue: ", venueId);
             if (err) throw err;
-            if(venue && venue.visitors > 0) {
-                jsonResponse = {"visitors": venue.visitors};
+            if (venue && venue.visitors > 0) {
+                jsonResponse = {
+                    "venueId": venueId,
+                    "visitors": venue.visitors
+                };
                 res.send(jsonResponse);
             } else {
                 res.send(jsonResponse);
             }
-        });        
+        });
     });
-    
-    app.post('/venue/:vid/visitors', function (req, res) {
+
+    app.post('/venue/:vid/visitors', isLoggedIn, function (req, res) {
         var venueId = req.params.vid;
         console.log("User info:", req.user);
-        
+
         Venue.findById(venueId, function (err, venue) {
             console.log("Find venue: ", venueId);
             if (err) throw err;
-            
-            if(venue) { // Venue exist in db
+
+            if (venue) { // Venue exist in db
                 res.send('Venue exist in database');
             } else { // Save venue visitor
                 res.send('Save venue');
             }
-        });        
+        });
     });
-
 
     app.get('/login', function (req, res) {
         res.render('login', {

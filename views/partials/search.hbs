@@ -6,11 +6,13 @@
         <span>{{#each categories}}{{name}}&nbsp;&nbsp;{{/each}}</span>
         <a href="/venue/{{id}}">
             <div id="pid-{{id}}" class="img-placeholder"></div>
-        </a>
-        <div id="ph-{{id}}" class="btn-placeholder"></div>
+        </a>                  
+        
         {{location.formattedAddress}}
         <br>{{contact.phone}}
-        <br><br>
+        <br>
+        <div id="ph-{{id}}" class="btn-placeholder"></div>
+        <br>
     </div> 
     
     {{/each}}
@@ -22,18 +24,31 @@
 </div>
 <script src="/js/search.js"></script>
 
-
 {{#if user}}
 <script>
+var userId = '{{user.id}}';
 var btnPlaceholders = document.getElementsByClassName('btn-placeholder');
-// <button onclick="alert('clicked')">Going <span class="badge">0</span></button>
+
+function getVisitorCount(url, btnPlaceholderId) {    
+    $.get(url, function (response) {
+        console.log(response);
+        var venueId = btnPlaceholderId.slice(4)        
+        var btnTag = '<button type="button" class="btn btn-primary" onclick="visitVenue(\'' + venueId + '\', \'' + userId + '\',this)">Going <span class="badge">0</span></button>';
+        
+        $(btnPlaceholderId).append(btnTag);
+    }, 'json');
+}
     
 for (var btnPlaceholder of btnPlaceholders) {
     var btnId = btnPlaceholder.id.slice(3);
-    var link = window.location.origin + '/venue/visitors/' + btnId;
-    var btnPlaceholderId = '#pid-' + btnId;
-    console.log(link);
-    //fetchVenueVisitors(link, btnPlaceholderId);
+    var link = window.location.origin + '/venue/'+ btnId + '/visitors';
+    var btnPlaceholderId = '#ph-' + btnId;
+    //console.log(link);
+    getVisitorCount(link, btnPlaceholderId);
+}
+    
+function visitVenue(venueId, uid, button) {
+    console.log("VenueId:", venueId, "UserID:", uid);    
 }
 </script>
 {{/if}}
