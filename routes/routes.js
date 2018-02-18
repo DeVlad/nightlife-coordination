@@ -156,7 +156,7 @@ module.exports = function (app, passport) {
 
         ajax.get(venueUrl).then(response => {
             apiResponse = response.data.response.venue;
-            console.log(apiResponse);
+            //console.log(apiResponse);
 
         }).then(() => {
             // Render results page
@@ -175,21 +175,22 @@ module.exports = function (app, passport) {
     //TODO: Only for authenticated users, use database
     app.get('/venue/:vid/visitors', function (req, res) {
         var venueId = req.params.vid;
+        //console.log(venueId);
         var jsonResponse = {
-            "venueId": venueId,
-            "visitors": 0
+            "vid": venueId,
+            "count": 0
         };
 
-        Venue.findById(venueId, function (err, venue) {
-            console.log("Find venue: ", venueId);
+        Venue.find({vid: venueId}, function (err, venue) {
+            //console.log("GET: Find venue: ", venueId, venue);
             if (err) throw err;
-            if (venue && venue.visitors > 0) {
-                jsonResponse = {
-                    "venueId": venueId,
-                    "visitors": venue.visitors
-                };
+            if (venue[0] === undefined) { //Venue not found in database
                 res.send(jsonResponse);
             } else {
+                jsonResponse = {
+                    "vid": venueId,
+                    "count": venue[0].visitors.length
+                };
                 res.send(jsonResponse);
             }
         });
@@ -197,16 +198,71 @@ module.exports = function (app, passport) {
 
     app.post('/venue/:vid/visitors', isLoggedIn, function (req, res) {
         var venueId = req.params.vid;
-        console.log("User info:", req.user);
+        var userId = req.user._id.toString();
 
-        Venue.findById(venueId, function (err, venue) {
-            console.log("Find venue: ", venueId);
-            if (err) throw err;
-
-            if (venue) { // Venue exist in db
-                res.send('Venue exist in database');
+        Venue.find({vid: venueId}, function (err, venue) {
+            //console.log("POST: Find venue: ", venueId, venue);
+            if (err) throw err; 
+            if (venue.length > 0) { // Venue exist in db
+                //console.log('Venue exist in database', venue);                
+                if(venue[0].visitors.indexOf(userId) > -1) {
+                    //console.log("Visitor exist"); // Visitor exist. Remove user from venue.
+                    var visitors = venue[0].visitors.filter(function(user) {
+                        return user !== userId;
+                    });                    
+                    var updateVenue = {                    
+                        visitors: visitors
+                    };                    
+                    var jsonResponse = {
+                        "vid": venueId,
+                        "count": visitors.length
+                    };
+                    
+                    Venue.update({_id: venue[0]._id}, updateVenue, function (err) {
+                        if (err) throw err;                        
+                        console.log('Venue visitor successfully updated!');
+                    });
+                    
+                    res.send(jsonResponse);
+                    
+                } else {
+                    //console.log("Venue exist, user not exist", venue[0].visitors)
+                    var visitors = venue[0].visitors;
+                    visitors.push(userId);
+                    //console.log("visitors", visitors)
+                    var updateVenue = {                    
+                        visitors: visitors
+                    };
+                    var jsonResponse = {
+                        "vid": venueId,
+                        "count": updateVenue.visitors.length
+                    };
+                    
+                    Venue.update({_id: venue[0]._id}, updateVenue, function (err) {
+                        if (err) throw err;
+                        console.log('Venue visitor successfully updated!');
+                    });
+                
+                    res.send(jsonResponse);
+                }
+                
             } else { // Save venue visitor
-                res.send('Save venue');
+                //console.log("Venue not exist")
+                var venue = new Venue({
+                    vid: venueId,
+                    visitors: [userId]
+                });
+                var jsonResponse = {
+                        "vid": venueId,
+                        "count": 1
+                };
+                
+                venue.save(function (err) {
+                    if (err) throw err;
+                    console.log('Venue visitor successfully saved!');
+                });
+
+                res.send(jsonResponse);
             }
         });
     });
