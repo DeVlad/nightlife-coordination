@@ -1,19 +1,16 @@
 {{>nav}}
 <h2 class="white">Venue details</h2>
-
 <div class="row">
     <div class="col- col-md-4 card">
         <strong>{{venue.name}}</strong><br> {{>carousel}} {{venue.location.country}}
-
         <br> {{venue.location.city}}
         <br> {{venue.location.address}} <a target="_blank" href="http://www.google.com/maps/place/{{venue.location.lat}},{{venue.location.lng}}"><span class="glyphicon glyphicon-map-marker"></span></a>
-
         <br> {{venue.contact.formattedPhone}}
         <br> {{venue.description}}
-
         <br> Likes: {{venue.likes.count}} {{#if venue.rating}}Rating: {{venue.rating}}{{/if}}<br>
         {{#if venue.url}}
-        <a target="_blank" href="{{venue.url}}">Website</a>
+        <a target="_blank" href="{{venue.url}}">Website</a><br>
         {{/if}}
+        <div id="ph-{{id}}" class="btn-placeholder"></div>
     </div>
 </div>

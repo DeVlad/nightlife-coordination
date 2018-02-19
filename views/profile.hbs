@@ -1,12 +1,10 @@
 {{>profile-nav}}
 <div class="white backlight">
-<h2>Wellcome to your profile {{user.firstName}}</h2>
-
-<div>
-    Name: {{user.firstName}} {{user.lastName}} <br> Email: {{user.email}}<br> Last search: {{user.search}}<br>
-</div>
-
-{{#if message}}
-<div class="alert">{{message}}</div>
-{{/if}}
+    <h2>Wellcome to your profile {{user.firstName}}</h2>
+    <div>
+        Name: {{user.firstName}} {{user.lastName}} <br> Email: {{user.email}}<br> Last search: {{user.search}}<br>
+    </div>
+    {{#if message}}
+    <div class="alert">{{message}}</div>
+    {{/if}}
 </div>
