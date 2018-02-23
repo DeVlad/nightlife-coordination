@@ -40,13 +40,24 @@ module.exports = function (app, passport) {
             console.log('WARNING: Please export API credentials as environment variables !');
             return res.send('ERROR: No API credentials exported !');
         } else {
-            var apiResponse = {};
-            // TODO: Sanitaze user input
+            // Empty search
+            if (req.body.search.length == 0) {
+                return res.render('search', {
+                    message: 'No venues found !',
+                    searched: req.body.search
+                });
+            }
+            
+            var apiResponse = {};            
+            var searchTerm = req.body.search;
+            searchTerm = searchTerm.trim().replace(/[_/\\#$;|"'?<>*(){}*@^.:!%&[\]]/g, ''); // Sanitaze user input
+            //console.log(searchTerm);
+            
             if (req.isAuthenticated()) {
-                saveLastSearch(req.user._id, req.body.search);
+                saveLastSearch(req.user._id, searchTerm);
             }
 
-            ajax.get(apiQuery + 'near=' + req.body.search).then(response => {
+            ajax.get(apiQuery + 'near=' + searchTerm).then(response => {
                 // Success
                 apiResponse = response.data.response;
 
@@ -54,7 +65,7 @@ module.exports = function (app, passport) {
                 // Render results page                
                 res.render('search', {
                     result: apiResponse,
-                    searched: req.body.search
+                    searched: searchTerm
                 });
 
             }).catch(error => {
@@ -63,7 +74,7 @@ module.exports = function (app, passport) {
                 // venue not found
                 res.render('search', {
                     message: 'No venues found !',
-                    searched: req.body.search
+                    searched: searchTerm
                 });
             });
         }
@@ -171,9 +182,8 @@ module.exports = function (app, passport) {
 
     });
 
-    // Visitors count
-    //TODO: Only for authenticated users, use database
-    app.get('/venue/:vid/visitors', function (req, res) {
+    // Visitors count    
+    app.get('/venue/:vid/visitors', isLoggedIn, function (req, res) {
         var venueId = req.params.vid;
         //console.log(venueId);
         var jsonResponse = {
@@ -181,10 +191,9 @@ module.exports = function (app, passport) {
             "count": 0
         };
 
-        Venue.find({vid: venueId}, function (err, venue) {
-            //console.log("GET: Find venue: ", venueId, venue);
+        Venue.find({vid: venueId}, function (err, venue) {        
             if (err) throw err;
-            if (venue[0] === undefined) { //Venue not found in database
+            if (venue[0] === undefined) { // Venue not found in database
                 res.send(jsonResponse);
             } else {
                 jsonResponse = {
@@ -225,11 +234,10 @@ module.exports = function (app, passport) {
                     
                     res.send(jsonResponse);
                     
-                } else {
-                    //console.log("Venue exist, user not exist", venue[0].visitors)
+                } else { // Venue exist, user not exist
                     var visitors = venue[0].visitors;
                     visitors.push(userId);
-                    //console.log("visitors", visitors)
+                    
                     var updateVenue = {                    
                         visitors: visitors
                     };
@@ -239,15 +247,13 @@ module.exports = function (app, passport) {
                     };
                     
                     Venue.update({_id: venue[0]._id}, updateVenue, function (err) {
-                        if (err) throw err;
-                        console.log('Venue visitor successfully updated!');
+                        if (err) throw err;                        
                     });
                 
                     res.send(jsonResponse);
                 }
                 
-            } else { // Save venue visitor
-                //console.log("Venue not exist")
+            } else { // Venue not exist. Save venue and visitor.
                 var venue = new Venue({
                     vid: venueId,
                     visitors: [userId]
@@ -259,7 +265,7 @@ module.exports = function (app, passport) {
                 
                 venue.save(function (err) {
                     if (err) throw err;
-                    console.log('Venue visitor successfully saved!');
+                    //console.log('Venue visitor successfully saved!');
                 });
 
                 res.send(jsonResponse);
