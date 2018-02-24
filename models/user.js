@@ -31,10 +31,19 @@ var UserSchema = new Schema({
         max: [72, 'Search term is limited to 72 characters'],
         default: ""
     },
-    venues: [],    
+    venues: [],
 
 }, {
     versionKey: false
 });
+
+// String id to mongo object id
+UserSchema.statics.toObjectId = function (id) {
+    if (mongoose.Types.ObjectId.isValid(id)) {
+        objectId = mongoose.Types.ObjectId(id);
+        return objectId;
+    }
+    return false;
+}
 
 module.exports = mongoose.model('User', UserSchema);

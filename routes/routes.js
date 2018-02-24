@@ -50,25 +50,25 @@ module.exports = function (app, passport) {
             
             var apiResponse = {};            
             var searchTerm = req.body.search;
-            searchTerm = searchTerm.trim().replace(/[_/\\#$;|"'?<>*(){}*@^.:!%&[\]]/g, ''); // Sanitaze user input
-            //console.log(searchTerm);
+            searchTerm = searchTerm.trim().replace(/[_/\\#$;|"?<>*(){}*@^.:!%&[\]`~=+]/g, ''); // Sanitaze user input
+            console.log(searchTerm);
             
             if (req.isAuthenticated()) {
                 saveLastSearch(req.user._id, searchTerm);
             }
 
-            ajax.get(apiQuery + 'near=' + searchTerm).then(response => {
+            ajax.get(apiQuery + 'near=' + searchTerm).then(function (response) {
                 // Success
                 apiResponse = response.data.response;
 
-            }).then(() => {
+            }).then(function () {
                 // Render results page                
                 res.render('search', {
                     result: apiResponse,
                     searched: searchTerm
                 });
 
-            }).catch(error => {
+            }).catch(function (error) {
                 //console.log(error);
                 //return res.send('Error fetching API data');
                 // venue not found
@@ -86,14 +86,14 @@ module.exports = function (app, passport) {
             var lastSearch = req.user.search;
             var apiResponse = {};
 
-            ajax.get(apiQuery + 'near=' + lastSearch).then(response => {
+            ajax.get(apiQuery + 'near=' + lastSearch).then(function (response) {
                 apiResponse = response.data.response;
-            }).then(() => {
+            }).then(function () {
                 res.render('search', {
                     result: apiResponse,
                     searched: lastSearch
                 });
-            }).catch(error => {
+            }).catch(function (error) {
                 res.render('search');
             });
         } else {
@@ -106,7 +106,7 @@ module.exports = function (app, passport) {
         var venueId = req.params.vid;
         var venueUrl = "https://api.foursquare.com/v2/venues/" + venueId + "?client_id=" + config.api.client_id + "&client_secret=" + config.api.client_secret + "&v=" + config.api.v;
 
-        ajax.get(venueUrl).then(response => {
+        ajax.get(venueUrl).then(function (response) {
             if (response.data.response.venue.bestPhoto) {
                 var pictureUrl = response.data.response.venue.bestPhoto.prefix + config.picture.resolution + response.data.response.venue.bestPhoto.suffix;
                 var jsonResponse = {
@@ -119,7 +119,7 @@ module.exports = function (app, passport) {
             }
             res.send(jsonResponse);
 
-        }).catch(error => {
+        }).catch(function (error) {
             //console.log(error);
             var jsonResponse = {
                 url: config.picture.defaultVenuePicture
@@ -133,7 +133,7 @@ module.exports = function (app, passport) {
         var venueId = req.params.vid;
         var venueUrl = "https://api.foursquare.com/v2/venues/" + venueId + "/photos?client_id=" + config.api.client_id + "&client_secret=" + config.api.client_secret + "&v=" + config.api.v;
 
-        ajax.get(venueUrl).then(response => {
+        ajax.get(venueUrl).then(function (response) {
             if (response.data.response.photos.count > 0) {
                 var apiPhotos = response.data.response.photos.items;
                 var photoUrls = [];
@@ -152,7 +152,7 @@ module.exports = function (app, passport) {
             }
             res.send(jsonResponse);
 
-        }).catch(error => {
+        }).catch(function (error) {
             var jsonResponse = {
                 pictures: [config.picture.defaultVenuePicture]
             };
@@ -165,17 +165,17 @@ module.exports = function (app, passport) {
         var venueUrl = "https://api.foursquare.com/v2/venues/" + venueId + "?client_id=" + config.api.client_id + "&client_secret=" + config.api.client_secret + "&v=" + config.api.v;
         var apiResponse = {};
 
-        ajax.get(venueUrl).then(response => {
+        ajax.get(venueUrl).then(function (response) {
             apiResponse = response.data.response.venue;
             //console.log(apiResponse);
 
-        }).then(() => {
+        }).then(function () {
             // Render results page
             res.render('venue', {
                 venue: apiResponse,
             });
 
-        }).catch(error => {
+        }).catch(function (error) {
             //console.log(error);
             return res.send('Error fetching API data');
         });
@@ -195,10 +195,11 @@ module.exports = function (app, passport) {
             if (err) throw err;
             if (venue[0] === undefined) { // Venue not found in database
                 res.send(jsonResponse);
-            } else {
+            } else {                
                 jsonResponse = {
                     "vid": venueId,
-                    "count": venue[0].visitors.length
+                    "count": venue[0].visitors.length,
+                    "visitors": venue[0].visitors
                 };
                 res.send(jsonResponse);
             }
@@ -271,6 +272,30 @@ module.exports = function (app, passport) {
                 res.send(jsonResponse);
             }
         });
+    });
+    
+    // TODO: only for auth users
+    app.get('/user/:id', function (req, res) {
+        var userId = req.params.id;
+        var objectId = User.toObjectId(userId); // Convert string id to mongo object id
+        var jsonResponse = {"username": false};
+        
+        if(!objectId) { // Invalid object id string
+            res.send(jsonResponse);
+        } else {
+            User.find({_id: objectId}, function (err, user) {                
+                if (err) throw err;
+                if (user[0] === undefined) { // User not found in database
+                    res.send(jsonResponse);
+                } else {
+                    var names = user[0].firstName + ' ' + user[0].lastName;
+                    jsonResponse = {
+                        "username": names                   
+                    };
+                    res.send(jsonResponse);
+                }
+            });            
+        }
     });
 
     app.get('/login', function (req, res) {

@@ -15,8 +15,10 @@
         <a target="_blank" href="{{venue.url}}">Website</a><br>
         {{/if}}
         <div id="ph-{{venue.id}}" class="btn-placeholder"></div>
+        {{#if user}}
+        <script src="/js/visit.js"></script>        
+        <p id="visitors-list"></p>
+        {{/if}}
     </div>
 </div>
-{{#if user}}
-<script src="/js/visit.js"></script>
-{{/if}}
+
