@@ -34,14 +34,19 @@ db.on('error', function () {
 
 db.on('disconnected', function () {
     console.log('Disconnected from:', uri);
-    mongoose.connect(uri, options);
+    mongoose.connect(uri, options).catch(function () {
+        console.error('Error establishing a database connection! \nPlease check your database service.');        
+    });    
 });
 
 db.on('reconnected', function () {
     console.log('Reconnected to database.');
 });
 
-mongoose.connect(uri, options);
+mongoose.connect(uri, options).catch(function () {
+        console.error('Error starting application!');
+        process.exit(1);
+});
 
 // Passport Auth
 require('./config/passport')(passport);

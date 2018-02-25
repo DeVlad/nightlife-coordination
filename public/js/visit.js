@@ -3,51 +3,69 @@ var btnPlaceholders = document.getElementsByClassName('btn-placeholder');
 
 // Get visitors count and ids
 function getVisitorCount(url, btnPlaceholderId) {
-    $.get(url, function (response) {        
+    var pattern = /venue/g; // For single venue check. TODO: improve
+    var path = window.location.pathname;
+
+    $.get(url, function (response) {
         var visitorsCount = 0;
         var venueId = btnPlaceholderId.slice(4);
-        
-        if(response.count > 0) {
+
+        if (response.count > 0) {
             visitorsCount = response.count;
-            
-            getVisitorNames(venueId, response.visitors);            
+
+            if (pattern.test(path)) { // if  venue details page
+                getVisitorNames(response.visitors);
+            }
         }
-                
-        var btnTag = '<button type="button" class="btn btn-primary" onclick="visitVenue(\'' + venueId + '\', \'' + userId + '\',this)">Going <span id="btn-' + venueId + '" class="badge">' + visitorsCount +'</span></button>';
-        
+
+        var btnTag = '<button type="button" class="btn btn-primary" onclick="visitVenue(\'' + venueId + '\', \'' + userId + '\',this)">Going <span id="btn-' + venueId + '" class="badge">' + visitorsCount + '</span></button>';
+
         $(btnPlaceholderId).append(btnTag);
+
     }, 'json');
 }
-    
+
 for (var btnPlaceholder of btnPlaceholders) {
     var btnId = btnPlaceholder.id.slice(3);
-    var link = window.location.origin + '/venue/'+ btnId + '/visitors';
+    var link = window.location.origin + '/venue/' + btnId + '/visitors';
     var btnPlaceholderId = '#ph-' + btnId;
-    
+
     getVisitorCount(link, btnPlaceholderId);
+
 }
 
 // invoked onclick going button
 function visitVenue(venueId, uid, button) {
-    var url = window.location.origin + '/venue/'+ venueId + '/visitors';
-    //console.log("VenueId:", venueId, "UserID:", uid);
-    
-    $.post(url, function (response) {
-        //console.log("POST:", response)
+    var url = window.location.origin + '/venue/' + venueId + '/visitors';
+
+    $.post(url, function (response) {        
         var id = '#btn-' + response.vid;
-        var visitorsCount = response.count | 0;        
-        
-        $(id).text(visitorsCount);        
+        var visitorsCount = response.count | 0;
+
+        $(id).text(visitorsCount);
+
     }, 'json');
 }
 
-function getVisitorNames(venueId, visitors) {    
+
+//TODO ensure to work only for single venue details
+function getVisitorNames(visitors) {
     var visitorsPlaceholderId = "#visitors-list";
-    var output = '';
-    
-    visitors.forEach(function(visitor){
-        output += visitor + ', ';
+
+    visitors.forEach(function (visitor) {
+        var visitorUrl = window.location.origin + '/user/' + visitor;
+
+        $.get(visitorUrl, function (response) {
+            if (response && response.username !== false) {
+                var output = response.username + ', ';
+
+                $(visitorsPlaceholderId).append(output);
+
+            } else {
+                console.log('Error fetching username');
+            }
+
+        }, 'json');
     });
-    // TODOL fetch names from database
-    $(visitorsPlaceholderId).text(output);
+
 }
