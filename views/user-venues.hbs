@@ -1,0 +1,69 @@
+{{>profile-nav}}
+<div class="container white">
+    <h3>{{user.firstName}} is going to:</h3>
+
+    <table class="table transparent">
+        <thead>
+            <tr>
+                <th>Venue</th>
+                <th>City</th>
+                <th>Country</th>
+                <th>Phone</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#if venues}}
+            {{#each venues}}
+            <tr id="id-{{vid}}" class="table-row">
+                <td><a href="/venue/{{vid}}" id="name-{{vid}}" class="white" target="_blank"></a></td>
+                <td id="city-{{vid}}"></td>
+                <td id="country-{{vid}}"></td>
+                <td id="phone-{{vid}}"></td>
+                <td><span class="glyphicon glyphicon-remove remove" aria-hidden="true" onclick="removeFromVenue('{{vid}}')"></span></td>
+            </tr>
+            {{/each}}
+            {{/if}}
+        </tbody>
+    </table>
+</div>
+
+<script>
+var tableRow = document.getElementsByClassName('table-row');
+    
+function displayVenueInfo(venueId, name, city, country, phone) {
+    $('#name-' + venueId).text(name);
+    $('#city-' + venueId).text(city);
+    $('#country-' + venueId).text(country);
+    $('#phone-' + venueId).text(phone);
+}
+
+function getVenueInfo(id) {
+    var venueId = id;
+    var url = window.location.origin + '/venue/' + venueId + '/json';
+
+    $.get(url, function (response) {
+        var name = response.venue.name;
+        var phone = response.venue.contact.phone ? response.venue.contact.phone : '-';
+        var city = response.venue.location.city ? response.venue.location.city : '-';
+        var country = response.venue.location.country ? response.venue.location.country : '-';
+        
+        displayVenueInfo(venueId, name, city, country, phone);
+        
+    }, 'json');
+}
+    
+for(var i = 0;i < tableRow.length; i++) {
+    var venueId = tableRow[i].id.slice(3);
+      
+    getVenueInfo(venueId);
+}
+    
+function removeFromVenue(venueId) {    
+    var url = window.location.origin + '/venue/' + venueId + '/visitors';
+
+    $.post(url, function (response) {        
+        $('#id-' + venueId).remove();        
+    }, 'json');
+}
+
+</script>

@@ -159,7 +159,8 @@ module.exports = function (app, passport) {
             return res.send(jsonResponse);
         });
     });
-
+    
+    // Venue details page
     app.get('/venue/:vid', function (req, res) {
         var venueId = req.params.vid;
         var venueUrl = "https://api.foursquare.com/v2/venues/" + venueId + "?client_id=" + config.api.client_id + "&client_secret=" + config.api.client_secret + "&v=" + config.api.v;
@@ -178,6 +179,27 @@ module.exports = function (app, passport) {
         }).catch(function (error) {
             //console.log(error);
             return res.send('Error fetching API data');
+        });
+
+    });
+    
+    // Return venue data in json format. TODO: only for auth users.
+    app.get('/venue/:vid/json', function (req, res) {
+        var venueId = req.params.vid;
+        var venueUrl = "https://api.foursquare.com/v2/venues/" + venueId + "?client_id=" + config.api.client_id + "&client_secret=" + config.api.client_secret + "&v=" + config.api.v;
+        var apiResponse = {};
+
+        ajax.get(venueUrl).then(function (response) {
+            apiResponse = response.data.response.venue;
+            //console.log(apiResponse);
+
+        }).then(function () {
+            // Render results page
+            res.send({ venue: apiResponse });
+
+        }).catch(function (error) {
+            //console.log(error);
+            return res.send({venue: false});
         });
 
     });
@@ -230,7 +252,7 @@ module.exports = function (app, passport) {
                     
                     Venue.update({_id: venue[0]._id}, updateVenue, function (err) {
                         if (err) throw err;                        
-                        console.log('Venue visitor successfully updated!');
+                        //console.log('Venue visitor successfully updated!');
                     });
                     
                     res.send(jsonResponse);
@@ -274,8 +296,8 @@ module.exports = function (app, passport) {
         });
     });
     
-    // TODO: only for auth users
-    app.get('/user/:id', function (req, res) {
+    
+    app.get('/user/:id', isLoggedIn, function (req, res) {
         var userId = req.params.id;
         var objectId = User.toObjectId(userId); // Convert string id to mongo object id
         var jsonResponse = {"username": false};
@@ -296,6 +318,24 @@ module.exports = function (app, passport) {
                 }
             });            
         }
+    });
+    
+    // TODO: Get list of venues the user will visit. Only for auth users
+    app.get('/user/:id/venues', isLoggedIn, function (req, res) {
+        var userId = req.params.id;
+        var jsonResponse = {"venues": false};
+        
+        Venue.find({ visitors: { "$in" : [userId] } }, {"visitors": 0, _id: 0}, function (err, venues) {                
+                if (err) throw err;
+                if (venues[0] === undefined) { // User not found in venues
+                    res.send(jsonResponse);
+                } else { // found in venues
+                    jsonResponse = {
+                        "venues": venues
+                    };                    
+                    res.render('user-venues', jsonResponse);
+                }
+            });        
     });
 
     app.get('/login', function (req, res) {

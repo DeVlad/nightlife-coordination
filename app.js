@@ -35,8 +35,8 @@ db.on('error', function () {
 db.on('disconnected', function () {
     console.log('Disconnected from:', uri);
     mongoose.connect(uri, options).catch(function () {
-        console.error('Error establishing a database connection! \nPlease check your database service.');        
-    });    
+        console.error('Error establishing a database connection! \nPlease check your database service.');
+    });
 });
 
 db.on('reconnected', function () {
@@ -44,8 +44,8 @@ db.on('reconnected', function () {
 });
 
 mongoose.connect(uri, options).catch(function () {
-        console.error('Error starting application!');
-        process.exit(1);
+    console.error('Error starting application!');
+    process.exit(1);
 });
 
 // Passport Auth
@@ -80,9 +80,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Expose user account info to template engine
-app.use(function(req, res, next){
-  res.locals.user = req.user;  
-  next();
+app.use(function (req, res, next) {
+    res.locals.user = req.user;
+    next();
 });
 
 // Flash messages stored in session

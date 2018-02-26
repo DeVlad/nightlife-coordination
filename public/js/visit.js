@@ -47,8 +47,6 @@ function visitVenue(venueId, uid, button) {
     }, 'json');
 }
 
-
-//TODO ensure to work only for single venue details
 function getVisitorNames(visitors) {
     var visitorsPlaceholderId = "#visitors-list";
 
@@ -67,5 +65,4 @@ function getVisitorNames(visitors) {
 
         }, 'json');
     });
-
 }
