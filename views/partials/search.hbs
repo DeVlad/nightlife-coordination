@@ -7,17 +7,14 @@
         <a href="/venue/{{id}}">
             <div id="pid-{{id}}" class="img-placeholder"></div>
         </a>
-        {{location.formattedAddress}}
-        <br>{{contact.phone}}
-        <br>
+        <address>{{location.formattedAddress}}</address><br>
         <div id="ph-{{id}}" class="btn-placeholder"></div>
         <br>
-    </div> 
-    
+    </div>    
     {{/each}}
     {{/if}}
     {{#if message}}
-    <div class="col- col-sm-6 col-md-4"><strong>{{message}}</strong></div>
+    <div class="col- col-sm-6 col-md-4"><strong class="white lead">{{message}}</strong></div>
     {{/if}}
 </div>
 </div>
@@ -25,5 +22,3 @@
 {{#if user}}
 <script src="/js/visit.js"></script>
 {{/if}}
-
-    

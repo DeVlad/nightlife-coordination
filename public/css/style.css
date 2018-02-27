@@ -82,11 +82,32 @@ label {
     background-color: rgba(0, 0, 0, .7);
     border-color: palevioletred;
 }
+
 .navbar-default .navbar-nav > li > a {
     color: white;
 }
+
 .navbar-default .navbar-nav > li > a:hover {
     /* background-color: #E7E7E7; */
     background-color: rgba(0, 0, 0, .9);
     color: palevioletred;
+}
+
+address {
+    margin-bottom: 0px;
+}
+
+.glyphicon-map-marker {
+    font-size: 18px;
+    color: #F24944;
+}
+
+.glyphicon-phone {
+    font-size: 18px;
+    color: dodgerblue;
+}
+
+.glyphicon-star-empty {
+    font-size: 18px;
+    color: gold;
 }
