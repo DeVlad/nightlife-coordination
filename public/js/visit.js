@@ -1,4 +1,3 @@
-var userId = '{{user.id}}';
 var btnPlaceholders = document.getElementsByClassName('btn-placeholder');
 
 // Get visitors count and ids
@@ -18,8 +17,8 @@ function getVisitorCount(url, btnPlaceholderId) {
             }
         }
 
-        var btnTag = '<button type="button" class="btn btn-primary" onclick="visitVenue(\'' + venueId + '\', \'' + userId + '\',this)">Going <span id="btn-' + venueId + '" class="badge">' + visitorsCount + '</span></button>';
-
+        var btnTag = '<button type="button" class="btn btn-primary" onclick="visitVenue(\'' + venueId + '\', this)">Going <span id="btn-' + venueId + '" class="badge">' + visitorsCount + '</span></button>';
+        
         $(btnPlaceholderId).append(btnTag);
 
     }, 'json');
@@ -31,14 +30,13 @@ for (var btnPlaceholder of btnPlaceholders) {
     var btnPlaceholderId = '#ph-' + btnId;
 
     getVisitorCount(link, btnPlaceholderId);
-
 }
 
 // invoked onclick going button
-function visitVenue(venueId, uid, button) {
+function visitVenue(venueId, button) {
     var url = window.location.origin + '/venue/' + venueId + '/visitors';
 
-    $.post(url, function (response) {        
+    $.post(url, function (response) {   
         var id = '#btn-' + response.vid;
         var visitorsCount = response.count | 0;
 
@@ -49,20 +47,20 @@ function visitVenue(venueId, uid, button) {
 
 function getVisitorNames(visitors) {
     var visitorsPlaceholderId = "#visitors-list";
-
+    var userNames = $('#firstName').text() + ' ' + $('#lastName').text(); // For skipping display of the current user 
+    
     visitors.forEach(function (visitor) {
         var visitorUrl = window.location.origin + '/user/' + visitor;
 
         $.get(visitorUrl, function (response) {
-            if (response && response.username !== false) {
+            if (response && response.username !== false && response.username !== userNames) {
                 var output = response.username + ', ';
-
-                $(visitorsPlaceholderId).append(output);
+                
+                $(visitorsPlaceholderId).append(output);               
 
             } else {
                 console.log('Error fetching username');
             }
-
         }, 'json');
     });
 }

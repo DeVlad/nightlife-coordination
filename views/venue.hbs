@@ -13,8 +13,10 @@
         {{#if venue.url}}<a target="_blank" href="{{venue.url}}">&nbsp;Website</a>{{/if}}<br><br>
         <div id="ph-{{venue.id}}" class="btn-placeholder"></div>
         {{#if user}}
-        <script src="/js/visit.js"></script>        
         <p id="visitors-list"></p>
+        <div hidden id="firstName">{{user.firstName}}</div>
+        <div hidden id="lastName">{{user.lastName}}</div>
+        <script src="/js/visit.js"></script>       
         {{/if}}
     </div>
 </div>

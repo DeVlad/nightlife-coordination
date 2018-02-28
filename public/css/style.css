@@ -93,6 +93,17 @@ label {
     color: palevioletred;
 }
 
+.form-control {
+    color: white;
+    border: 1px solid palevioletred;
+    background-color: rgba(0, 0, 0, .8);
+}
+
+.input-group-addon {
+    color: palevioletred;
+    background-color: #333131;
+}
+
 address {
     margin-bottom: 0px;
 }
@@ -110,4 +121,8 @@ address {
 .glyphicon-star-empty {
     font-size: 18px;
     color: gold;
+}
+
+.navbar-default .navbar-brand {
+    color: palevioletred;
 }
