@@ -1,32 +1,27 @@
-.row.display-flex {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.row.display-flex > [class*='col-'] {
-    display: flex;
-    flex-direction: column;
-}
-
-#myCarousel {
-    background-color: black;
-    width: 320px;
-    height: 240px;
-}
-
-.carousel-image {
-    display: block;
-    margin: 0 auto;
-    max-height: 240px;
-    max-width: 100%;
-}
-
 body {
-    background-image: url('../img/2.jpg');
+    background-image: url(../img/2.jpg);
     background-position: center center;
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;
+}
+
+.navbar-default {
+    background-color: rgba(0, 0, 0, .7);
+    border-color: #D87093;
+}
+
+.navbar-default .navbar-nav > li > a:hover {
+    background-color: rgba(0, 0, 0, .9);
+    color: #D87093;
+}
+
+.navbar-default .navbar-brand {
+    color: #D87093;
+}
+
+.navbar-default .navbar-brand:hover {
+    color: #d1f2d8;
 }
 
 .card {
@@ -38,17 +33,41 @@ body {
     border: 1px solid #fd487c;
 }
 
-.white {
-    color: white;
+.img-responsive {
+    margin: auto;
+}
+
+.row.display-flex {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.row.display-flex > [class*='col-'] {
+    display: flex;
+    flex-direction: column;
+}
+
+#venue-carousel {
+    background-color: #000;
+    width: 320px;
+    height: 240px;
+}
+
+.carousel-image {
+    display: block;
+    max-height: 240px;
+    max-width: 100%;
+    margin: 0 auto;
 }
 
 label {
-    background: white;
+    color: #FFF;
+    background: rgba(0, 0, 0, .7);
 }
 
 .fancy {
     display: inline-block;
-    font-family: 'Codystar', cursive;
+    font-family: Codystar, cursive;
     font-size: 60px;
     color: #fd487c;
     background: rgba(0, 0, 0, .7);
@@ -74,38 +93,19 @@ label {
     color: red;
 }
 
-.navbar-default .navbar-nav > li > a {
-    color: #777777;
-}
-
-.navbar-default {
-    background-color: rgba(0, 0, 0, .7);
-    border-color: palevioletred;
-}
-
-.navbar-default .navbar-nav > li > a {
-    color: white;
-}
-
-.navbar-default .navbar-nav > li > a:hover {
-    /* background-color: #E7E7E7; */
-    background-color: rgba(0, 0, 0, .9);
-    color: palevioletred;
-}
-
 .form-control {
-    color: white;
-    border: 1px solid palevioletred;
+    color: #FFF;
+    border: 1px solid #D87093;
     background-color: rgba(0, 0, 0, .8);
 }
 
 .input-group-addon {
-    color: palevioletred;
+    color: #D87093;
     background-color: #333131;
 }
 
 address {
-    margin-bottom: 0px;
+    margin-bottom: 0;
 }
 
 .glyphicon-map-marker {
@@ -115,18 +115,31 @@ address {
 
 .glyphicon-phone {
     font-size: 18px;
-    color: dodgerblue;
+    color: #1E90FF;
 }
 
 .glyphicon-star-empty {
     font-size: 18px;
-    color: gold;
-}
-
-.navbar-default .navbar-brand {
-    color: palevioletred;
+    color: #FFD700;
 }
 
 .modal-content {
-   background-color: #630303;
+    background-color: #630303;
+}
+
+.btn-fancy {
+    color: #FFF;
+    background-color: #ee4969;
+    border-color: #a87a9c;
+}
+
+.btn-fancy:hover {
+    color: #FFF;
+    background-color: #6544ec;
+    border-color: #2b1a29;
+}
+
+.navbar-default .navbar-nav > li > a, 
+.white {
+    color: #FFF;
 }

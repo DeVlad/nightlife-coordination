@@ -48,11 +48,10 @@ module.exports = function (app, passport) {
                 });
             }
             
-            var apiResponse = {};            
+            var apiResponse = {};
             var searchTerm = req.body.search;
             searchTerm = searchTerm.trim().replace(/[_/\\#$;|"?<>*(){}*@^.:!%&[\]`~=+]/g, ''); // Sanitaze user input
-            console.log(searchTerm);
-            
+            //console.log(searchTerm);            
             if (req.isAuthenticated()) {
                 saveLastSearch(req.user._id, searchTerm);
             }
@@ -62,16 +61,14 @@ module.exports = function (app, passport) {
                 apiResponse = response.data.response;
 
             }).then(function () {
-                // Render results page                
+                // Render results page
                 res.render('search', {
                     result: apiResponse,
                     searched: searchTerm
                 });
 
-            }).catch(function (error) {
-                //console.log(error);
-                //return res.send('Error fetching API data');
-                // venue not found
+            }).catch(function (error) {       
+                // Venue not found
                 res.render('search', {
                     message: 'No venues found !',
                     searched: searchTerm
@@ -120,7 +117,6 @@ module.exports = function (app, passport) {
             res.send(jsonResponse);
 
         }).catch(function (error) {
-            //console.log(error);
             var jsonResponse = {
                 url: config.picture.defaultVenuePicture
             };
@@ -168,8 +164,6 @@ module.exports = function (app, passport) {
 
         ajax.get(venueUrl).then(function (response) {
             apiResponse = response.data.response.venue;
-            //console.log(apiResponse);
-
         }).then(function () {
             // Render results page
             res.render('venue', {
@@ -180,7 +174,6 @@ module.exports = function (app, passport) {
             //console.log(error);
             return res.send('Error fetching API data');
         });
-
     });
     
     // Return venue data in json format. TODO: only for auth users.
@@ -190,8 +183,7 @@ module.exports = function (app, passport) {
         var apiResponse = {};
 
         ajax.get(venueUrl).then(function (response) {
-            apiResponse = response.data.response.venue;
-            //console.log(apiResponse);
+            apiResponse = response.data.response.venue;           
 
         }).then(function () {
             // Render results page
@@ -201,19 +193,17 @@ module.exports = function (app, passport) {
             //console.log(error);
             return res.send({venue: false});
         });
-
     });
 
     // Visitors count    
     app.get('/venue/:vid/visitors', isLoggedIn, function (req, res) {
-        var venueId = req.params.vid;
-        //console.log(venueId);
+        var venueId = req.params.vid;        
         var jsonResponse = {
             "vid": venueId,
             "count": 0
         };
 
-        Venue.find({vid: venueId}, function (err, venue) {        
+        Venue.find({vid: venueId}, function (err, venue) {
             if (err) throw err;
             if (venue[0] === undefined) { // Venue not found in database
                 res.send(jsonResponse);
@@ -232,19 +222,16 @@ module.exports = function (app, passport) {
         var venueId = req.params.vid;
         var userId = req.user._id.toString();
 
-        Venue.find({vid: venueId}, function (err, venue) {
-            //console.log("POST: Find venue: ", venueId, venue);
+        Venue.find({vid: venueId}, function (err, venue) {            
             if (err) throw err; 
-            if (venue.length > 0) { // Venue exist in db
-                //console.log('Venue exist in database', venue);                
-                if(venue[0].visitors.indexOf(userId) > -1) {
-                    //console.log("Visitor exist"); // Visitor exist. Remove user from venue.
+            if (venue.length > 0) { // Venue exist in db                
+                if(venue[0].visitors.indexOf(userId) > -1) { // Visitor exist. Remove user from venue. 
                     var visitors = venue[0].visitors.filter(function(user) {
                         return user !== userId;
-                    });                    
-                    var updateVenue = {                    
+                    });
+                    var updateVenue = {
                         visitors: visitors
-                    };                    
+                    };
                     var jsonResponse = {
                         "vid": venueId,
                         "count": visitors.length
@@ -252,7 +239,6 @@ module.exports = function (app, passport) {
                     
                     Venue.update({_id: venue[0]._id}, updateVenue, function (err) {
                         if (err) throw err;                        
-                        //console.log('Venue visitor successfully updated!');
                     });
                     
                     res.send(jsonResponse);
@@ -287,15 +273,13 @@ module.exports = function (app, passport) {
                 };
                 
                 venue.save(function (err) {
-                    if (err) throw err;
-                    //console.log('Venue visitor successfully saved!');
+                    if (err) throw err;                    
                 });
 
                 res.send(jsonResponse);
             }
         });
-    });
-    
+    });    
     
     app.get('/user/:id', isLoggedIn, function (req, res) {
         var userId = req.params.id;
@@ -305,18 +289,18 @@ module.exports = function (app, passport) {
         if(!objectId) { // Invalid object id string
             res.send(jsonResponse);
         } else {
-            User.find({_id: objectId}, function (err, user) {                
+            User.find({_id: objectId}, function (err, user) {
                 if (err) throw err;
                 if (user[0] === undefined) { // User not found in database
                     res.send(jsonResponse);
                 } else {
                     var names = user[0].firstName + ' ' + user[0].lastName;
                     jsonResponse = {
-                        "username": names                   
+                        "username": names
                     };
                     res.send(jsonResponse);
                 }
-            });            
+            });
         }
     });
     
@@ -325,17 +309,17 @@ module.exports = function (app, passport) {
         var userId = req.params.id;
         var jsonResponse = {"venues": false};
         
-        Venue.find({ visitors: { "$in" : [userId] } }, {"visitors": 0, _id: 0}, function (err, venues) {                
+        Venue.find({ visitors: { "$in" : [userId] } }, {"visitors": 0, _id: 0}, function (err, venues) {         
                 if (err) throw err;
                 if (venues[0] === undefined) { // User not found in venues
                     res.send(jsonResponse);
                 } else { // found in venues
                     jsonResponse = {
                         "venues": venues
-                    };                    
+                    };
                     res.render('user-venues', jsonResponse);
                 }
-            });        
+            });
     });
 
     app.get('/login', function (req, res) {
@@ -366,7 +350,7 @@ module.exports = function (app, passport) {
 
     app.post(
         '/signup',
-        // Form filter and validation        
+        // Form filter and validation
         form(
             field("firstName").trim().required().is(/^[A-z]+$/),
             field("lastName").trim().required().is(/^[A-z]+$/),
@@ -375,17 +359,14 @@ module.exports = function (app, passport) {
             validate("rpassword").equals("field::password")
         ),
 
-        // Express request-handler now receives filtered and validated data 
+        // Express request-handler now receives filtered and validated data
         function (req, res) {
-            // Additional validations            
+            // Additional validations
             req.body.email = req.body.email.toLowerCase();
 
             if (!req.form.isValid) {
-                // Handle errors 
-                //console.log(req.form.errors);
-                //TODO: flash messages
+                // Handle errors                
                 res.redirect('/signup');
-
             } else {
                 passport.authenticate('local-signup', {
                     successRedirect: '/login',
@@ -417,7 +398,6 @@ module.exports = function (app, passport) {
     app.get('*', function (req, res) {
         res.status(404).send('Error: 404. Page not found !');
     });
-
 };
 
 // Is authenticated policy
@@ -452,8 +432,7 @@ function saveLastSearch(userId, searchTerm) {
         if (err) throw err;
         user.search = searchTerm;
         user.save(function (err) {
-            if (err) throw err;
-            //console.log('Search term successfully updated!');
+            if (err) throw err;            
         });
     });
 }
