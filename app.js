@@ -106,4 +106,7 @@ app.use(function (err, req, res, next) {
     }
 });
 
+// Turn off Express header
+app.disable('x-powered-by');
+
 app.listen(port, console.log('Web server is listening on port:', port));

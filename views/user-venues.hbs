@@ -1,7 +1,6 @@
 {{>profile-nav}}
 <div class="container white">
     <h3>{{user.firstName}} is going to:</h3>
-
     <table class="table transparent">
         <thead>
             <tr>
@@ -12,58 +11,85 @@
             </tr>
         </thead>
         <tbody>
-            {{#if venues}}
-            {{#each venues}}
+            {{#if venues}} {{#each venues}}
             <tr id="id-{{vid}}" class="table-row">
                 <td><a href="/venue/{{vid}}" id="name-{{vid}}" class="white" target="_blank"></a></td>
                 <td id="city-{{vid}}"></td>
                 <td id="country-{{vid}}"></td>
                 <td id="phone-{{vid}}"></td>
-                <td><span class="glyphicon glyphicon-remove remove" aria-hidden="true" onclick="removeFromVenue('{{vid}}')"></span></td>
+                <td><span class="glyphicon glyphicon-remove remove" data-id="{{vid}}" data-toggle="modal" data-target="#unvisit-venue-modal" aria-hidden="true"></span></td>
             </tr>
-            {{/each}}
-            {{/if}}
+            {{/each}} {{/if}}
         </tbody>
     </table>
 </div>
 
+<div class="modal fade" id="unvisit-venue-modal" role="dialog">
+    <div class="modal-dialog">        
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close white" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title white">Remove</h4>
+            </div>
+            <div class="modal-body white">
+                <p>I'm not going to the venue.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                <button id="btn-remove" type="button" class="btn btn-danger btn-default" data-yes="modal" data-dismiss="modal">Remove</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
-var tableRow = document.getElementsByClassName('table-row');
-    
-function displayVenueInfo(venueId, name, city, country, phone) {
-    $('#name-' + venueId).text(name);
-    $('#city-' + venueId).text(city);
-    $('#country-' + venueId).text(country);
-    $('#phone-' + venueId).text(phone);
-}
+    // Modal handler
+    $(document).on("click", ".remove", function() {
+        var removeUserId = $(this).data("id");
+        var removeUser = "removeFromVenue('" + removeUserId + "')";
 
-function getVenueInfo(id) {
-    var venueId = id;
-    var url = window.location.origin + '/venue/' + venueId + '/json';
+        $("#btn-remove").attr("onclick", removeUser);
+    });
 
-    $.get(url, function (response) {
-        var name = response.venue.name;
-        var phone = response.venue.contact.phone ? response.venue.contact.phone : '-';
-        var city = response.venue.location.city ? response.venue.location.city : '-';
-        var country = response.venue.location.country ? response.venue.location.country : '-';
-        
-        displayVenueInfo(venueId, name, city, country, phone);
-        
-    }, 'json');
-}
-    
-for(var i = 0;i < tableRow.length; i++) {
-    var venueId = tableRow[i].id.slice(3);
-      
-    getVenueInfo(venueId);
-}
-    
-function removeFromVenue(venueId) {    
-    var url = window.location.origin + '/venue/' + venueId + '/visitors';
+</script>
 
-    $.post(url, function (response) {        
-        $('#id-' + venueId).remove();        
-    }, 'json');
-}
+<script>
+    var tableRow = document.getElementsByClassName('table-row');
+
+    function displayVenueInfo(venueId, name, city, country, phone) {
+        $('#name-' + venueId).text(name);
+        $('#city-' + venueId).text(city);
+        $('#country-' + venueId).text(country);
+        $('#phone-' + venueId).text(phone);
+    }
+
+    function getVenueInfo(id) {
+        var venueId = id;
+        var url = window.location.origin + '/venue/' + venueId + '/json';
+
+        $.get(url, function(response) {
+            var name = response.venue.name;
+            var phone = response.venue.contact.phone ? response.venue.contact.phone : '-';
+            var city = response.venue.location.city ? response.venue.location.city : '-';
+            var country = response.venue.location.country ? response.venue.location.country : '-';
+
+            displayVenueInfo(venueId, name, city, country, phone);
+
+        }, 'json');
+    }
+
+    for (var i = 0; i < tableRow.length; i++) {
+        var venueId = tableRow[i].id.slice(3);
+
+        getVenueInfo(venueId);
+    }
+
+    function removeFromVenue(venueId) {
+        var url = window.location.origin + '/venue/' + venueId + '/visitors';
+
+        $.post(url, function(response) {
+            $('#id-' + venueId).remove();
+        }, 'json');
+    }
 
 </script>

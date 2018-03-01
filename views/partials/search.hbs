@@ -7,9 +7,10 @@
         <a href="/venue/{{id}}">
             <div id="pid-{{id}}" class="img-placeholder"></div>
         </a>
-        <address>{{location.formattedAddress}}</address><br>
-        <div id="ph-{{id}}" class="btn-placeholder"></div>
-        <br>
+        <address>{{location.formattedAddress}}</address>
+        {{#unless user}}
+        <div id="ph-{{id}}" class="btn-placeholder"></div><br>
+        {{/unless}}
     </div>    
     {{/each}}
     {{/if}}

@@ -126,3 +126,7 @@ address {
 .navbar-default .navbar-brand {
     color: palevioletred;
 }
+
+.modal-content {
+   background-color: #630303;
+}

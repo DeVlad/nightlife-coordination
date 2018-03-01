@@ -12,7 +12,7 @@ function getVisitorCount(url, btnPlaceholderId) {
         if (response.count > 0) {
             visitorsCount = response.count;
 
-            if (pattern.test(path)) { // if  venue details page
+            if (pattern.test(path)) { // if  venue details page                
                 getVisitorNames(response.visitors);
             }
         }
@@ -47,7 +47,9 @@ function visitVenue(venueId, button) {
 
 function getVisitorNames(visitors) {
     var visitorsPlaceholderId = "#visitors-list";
-    var userNames = $('#firstName').text() + ' ' + $('#lastName').text(); // For skipping display of the current user 
+    var userNames = $('#firstName').text() + ' ' + $('#lastName').text(); // For skipping display of the current user
+    
+    $(visitorsPlaceholderId).text('Visitors: ');
     
     visitors.forEach(function (visitor) {
         var visitorUrl = window.location.origin + '/user/' + visitor;
