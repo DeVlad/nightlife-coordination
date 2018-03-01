@@ -304,7 +304,7 @@ module.exports = function (app, passport) {
         }
     });
     
-    // TODO: Get list of venues the user will visit. Only for auth users
+    // Get list of venues the user will visit.
     app.get('/user/:id/venues', isLoggedIn, function (req, res) {
         var userId = req.params.id;
         var jsonResponse = {"venues": false};
@@ -318,6 +318,26 @@ module.exports = function (app, passport) {
                         "venues": venues
                     };
                     res.render('user-venues', jsonResponse);
+                }
+            });
+    });
+    // Delete user. TODO: for auth users only
+    app.delete('/user/:id/', function (req, res) {
+        var userId = req.params.id;
+        var jsonResponse = {"deleted": false};
+        
+        // Remove user from venues before account removal
+        Venue.update({ visitors: { "$in" : [userId] }}, { $pullAll: {visitors: [userId] }}, {"multi": true}, function (err, venues) {
+            console.log(venues);
+                if (err) throw err;        
+                if (venues.nModified === 0) { // User not found in venues
+                    res.send(jsonResponse);
+                } else { // found in venues
+                    // TODO: Account delete
+                    jsonResponse = {
+                        "deleted": true
+                    };
+                    res.send(jsonResponse);
                 }
             });
     });
