@@ -306,13 +306,14 @@ module.exports = function (app, passport) {
     
     // Get list of venues the user will visit.
     app.get('/user/:id/venues', isLoggedIn, function (req, res) {
+        // TODO: validate if user ins current logged user
         var userId = req.params.id;
-        var jsonResponse = {"venues": false};
+        var jsonResponse = {"venues": false};        
         
-        Venue.find({ visitors: { "$in" : [userId] } }, {"visitors": 0, _id: 0}, function (err, venues) {         
+        Venue.find({ visitors: { "$in" : [userId] } }, {"visitors": 0, _id: 0}, function (err, venues) {     
                 if (err) throw err;
                 if (venues[0] === undefined) { // User not found in venues
-                    res.send(jsonResponse);
+                    res.render('user-venues', jsonResponse);
                 } else { // found in venues
                     jsonResponse = {
                         "venues": venues
@@ -321,25 +322,37 @@ module.exports = function (app, passport) {
                 }
             });
     });
-    // Delete user. TODO: for auth users only
-    app.delete('/user/:id/', function (req, res) {
+    
+    // Delete user
+    app.delete('/user/:id/', isLoggedIn, function (req, res) {   
         var userId = req.params.id;
         var jsonResponse = {"deleted": false};
         
-        // Remove user from venues before account removal
-        Venue.update({ visitors: { "$in" : [userId] }}, { $pullAll: {visitors: [userId] }}, {"multi": true}, function (err, venues) {
-            console.log(venues);
-                if (err) throw err;        
-                if (venues.nModified === 0) { // User not found in venues
-                    res.send(jsonResponse);
-                } else { // found in venues
-                    // TODO: Account delete
+        if(userId !== req.user.id) { // ensure the user can delete only himself
+            console.log('WARNING: User with id: ' + req.user.id + 'is trying to delete user id: ' + req.params.id + ' !');
+            res.send(jsonResponse);
+        } else {            
+            // Remove user from all venues before account removal
+            Venue.update({ visitors: { "$in" : [userId] }}, { $pullAll: {visitors: [userId] }}, {"multi": true}, function (err, venues) {
+                if (err) throw err;
+                /*if (venues.nModified === 0) { // User not found in venues
+                    console.log("DELETE: User not found in any venue.");
+                }*/
+                // Account delete               
+                var objectId = User.toObjectId(userId);
+                        
+                User.remove({ "_id": objectId }, function (err, user) {
+                    if(err) throw err;
+                    console.log("DELETE: User id: " + userId + " is removed from database !");
                     jsonResponse = {
+                        "id": userId,
                         "deleted": true
-                    };
-                    res.send(jsonResponse);
-                }
+                    }
+                    
+                    res.send(jsonResponse);                            
+                    });          
             });
+        }    
     });
 
     app.get('/login', function (req, res) {

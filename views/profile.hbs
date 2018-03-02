@@ -7,4 +7,42 @@
     {{#if message}}
     <div class="alert">{{message}}</div>
     {{/if}}
+    <button id="remove" class="btn btn-danger pull-right" data-id="{{user.id}}" data-toggle="modal" data-target="#delete-account-modal">Unsubscribe</button>
 </div>
+<div class="modal fade" id="delete-account-modal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close white" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title white">Remove</h4>
+            </div>
+            <div class="modal-body white">
+                <p>Delete user account !</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                <button id="btn-remove" type="button" class="btn btn-danger btn-default" data-yes="modal" data-dismiss="modal">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // Modal handler
+    $(document).on("click", "#remove", function() {
+        var removeUserId = $(this).data("id");
+        var removeUser = "removeAccount('" + removeUserId + "')";
+        $("#btn-remove").attr("onclick", removeUser);
+    });
+
+    function removeAccount(userId) {
+        var url = window.location.origin + '/user/' + userId;
+        $.ajax({
+            url: url,
+            type: 'DELETE',
+            success: function(result) {
+                console.log("Deleted", result); // TODO: Confirmation message and redirect
+            }
+        }, 'json');
+    }
+
+</script>
