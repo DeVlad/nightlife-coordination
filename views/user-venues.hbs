@@ -13,7 +13,7 @@
         <tbody>
             {{#if venues}} {{#each venues}}
             <tr id="id-{{vid}}" class="table-row">
-                <td><a href="/venue/{{vid}}" id="name-{{vid}}" class="white" target="_blank"></a></td>
+                <td><a href="/venue/{{vid}}" id="name-{{vid}}" class="white table-url" target="_blank"></a></td>
                 <td id="city-{{vid}}"></td>
                 <td id="country-{{vid}}"></td>
                 <td id="phone-{{vid}}"></td>
@@ -25,18 +25,18 @@
 </div>
 
 <div class="modal fade" id="unvisit-venue-modal" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-sm pull-right">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close white" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title white">Remove</h4>
+                <h4 class="modal-title white"><span class="glyphicon glyphicon-exclamation-sign">&nbsp;</span>Remove</h4>
             </div>
             <div class="modal-body white">
                 <p>I'm not going to the venue.</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-                <button id="btn-remove" type="button" class="btn btn-danger btn-default" data-yes="modal" data-dismiss="modal">Remove</button>
+                <button id="btn-remove" type="button" class="btn btn-danger btn-default" data-yes="modal" data-dismiss="modal">Yes</button>
             </div>
         </div>
     </div>

@@ -2,19 +2,24 @@
 <div class="white backlight">
     <h2>Wellcome to your profile {{user.firstName}}</h2>
     <div>
-        Name: {{user.firstName}} {{user.lastName}} <br> Email: {{user.email}}<br> Last search: {{user.search}}<br>
+        Name: {{user.firstName}} {{user.lastName}} <br> Email: {{user.email}}<br> Last search: {{user.search}}<br><br>
+        <a href="/user/{{user.id}}/venues/"><button class="btn btn-fancy">My Venues</button></a><br>
+        <hr>
     </div>
     {{#if message}}
     <div class="alert">{{message}}</div>
     {{/if}}
+
+    <button id="btn-change-password" class="btn btn-fancy">Change password</button>
+
     <button id="remove" class="btn btn-danger pull-right" data-id="{{user.id}}" data-toggle="modal" data-target="#delete-account-modal">Unsubscribe</button>
 </div>
 <div class="modal fade" id="delete-account-modal" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close white" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title white">Remove</h4>
+                <h4 class="modal-title white"><span class="glyphicon glyphicon-exclamation-sign">&nbsp;</span>Remove</h4>
             </div>
             <div class="modal-body white">
                 <p>Delete user account !</p>
@@ -25,6 +30,33 @@
             </div>
         </div>
     </div>
+</div>
+
+<div id="password-form" class="row invisible">
+    <form class="col-md-4 col-md-offset-4">
+        <div class="input-group input-group-lg">
+            <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span>
+            </span>
+            <input class="form-control" type="password" name="password" required aria-required="true" placeholder="Password">
+        </div>
+        <div class="input-group input-group-lg">
+            <span class="input-group-addon"> <span class="glyphicon glyphicon-lock"></span></span>
+            <input class="form-control" type="password" name="npassword" required aria-required="true" placeholder="New password">
+        </div><br>
+        <button type="submit" class="btn btn-fancy" onclick="alert('Change')">Submit</button>
+    </form>
+    {{#if message}}
+    <br>
+    <div class="col-sm-2 white transparent text-center" id="fail-alert"><strong>{{message}}</strong></div>
+    <script>
+        $(document).ready(function() {
+            $("#fail-alert").fadeTo(4000, 500).slideUp(500, function() {
+                $("#fail-alert").slideUp(500);
+            });
+        });
+
+    </script>
+    {{/if}}
 </div>
 <script>
     // Modal handler
@@ -44,5 +76,9 @@
             }
         }, 'json');
     }
+
+    $("#btn-change-password").click(function() {
+        $("#password-form").toggleClass("invisible");
+    });
 
 </script>

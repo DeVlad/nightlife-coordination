@@ -51,6 +51,9 @@ mongoose.connect(uri, options).catch(function () {
 // Passport Auth
 require('./config/passport')(passport);
 
+// Cron scheduled tasks
+require('./config/cron');
+
 // Read cookies
 app.use(cookieParser());
 

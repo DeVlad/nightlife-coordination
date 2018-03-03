@@ -1,4 +1,5 @@
 body {
+    font-family: 'Lato', sans-serif;
     background-image: url(../img/2.jpg);
     background-position: center center;
     background-repeat: no-repeat;
@@ -123,6 +124,10 @@ address {
     color: #FFD700;
 }
 
+.glyphicon-exclamation-sign {
+    font-size: 24px;
+}
+
 .modal-content {
     background-color: #630303;
 }
@@ -133,13 +138,23 @@ address {
     border-color: #a87a9c;
 }
 
-.btn-fancy:hover {
+.btn-fancy:hover, .btn-fancy:focus, .btn-fancy:active {
     color: #FFF;
     background-color: #6544ec;
     border-color: #2b1a29;
 }
 
-.navbar-default .navbar-nav > li > a, 
+/* Prevent Bootsrap button blue color on mousedown in search results */
+.btn-fancy:active:hover {
+    background-color: #6544ec;
+}
+
+.table-url:hover {
+    color: #ffdf00;
+    background-color: #190c25;
+}
+
+.navbar-default .navbar-nav > li > a,
 .white {
     color: #FFF;
 }
@@ -148,3 +163,19 @@ address {
     font-size: 20px;
     border: 1px solid red;
 }
+
+/* Change Chrome default form filler pale yellow color */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus input:-webkit-autofill {
+    border: 1px solid #ee4969;
+    -webkit-text-fill-color: white;    
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
+
+

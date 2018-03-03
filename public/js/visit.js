@@ -17,7 +17,7 @@ function getVisitorCount(url, btnPlaceholderId) {
             }
         }
 
-        var btnTag = '<button type="button" class="btn btn-primary" onclick="visitVenue(\'' + venueId + '\', this)">Going <span id="btn-' + venueId + '" class="badge">' + visitorsCount + '</span></button>';
+        var btnTag = '<button type="button" class="btn btn-primary btn-fancy" onclick="visitVenue(\'' + venueId + '\', this)">Going <span id="btn-' + venueId + '" class="badge">' + visitorsCount + '</span></button>';
         
         $(btnPlaceholderId).append(btnTag);
 
