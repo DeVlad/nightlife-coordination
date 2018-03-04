@@ -1,0 +1,25 @@
+.error {
+    color: #fff !important;
+    background-color: #d03f3f;
+}
+
+/* Password change form borders on error */
+.input-group-lg {
+    border-bottom: 1px solid #D87093;
+    border-right: 1px solid #D87093;
+}
+
+.input-group-addon {
+    color: #D87093 !important;
+    background-color: #333131 !important;
+}
+
+@media screen and (max-width: 730px) {
+    h2 {
+        font-size: 20px;
+    }
+    .backlight {
+        margin-left: 0% !important;
+        margin-right: 0% !important;
+    }
+}

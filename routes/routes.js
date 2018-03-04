@@ -338,7 +338,7 @@ module.exports = function (app, passport) {
                 /*if (venues.nModified === 0) { // User not found in venues
                     console.log("DELETE: User not found in any venue.");
                 }*/
-                // Account delete               
+                // Account delete
                 var objectId = User.toObjectId(userId);
                         
                 User.remove({ "_id": objectId }, function (err, user) {
@@ -349,7 +349,7 @@ module.exports = function (app, passport) {
                         "deleted": true
                     }
                     
-                    res.send(jsonResponse);                            
+                    res.send(jsonResponse);
                     });          
             });
         }    
@@ -425,7 +425,49 @@ module.exports = function (app, passport) {
     app.get('/logout', function (req, res) {
         req.logout();
         res.redirect('/');
-    });
+    });    
+    
+    // Change user password
+    app.put('/user/:id/:password/:npassword', isLoggedIn, function (req, res) {                       
+            var userId = req.params.id;
+            var jsonResponse = {"changed": false};
+            var objectId = User.toObjectId(userId);
+        
+            if(userId !== req.user.id) { // ensure the user can change only his own password
+                console.log('WARNING: User with id: ' + req.user.id + 'is trying to change password of user id: ' + req.params.id + ' !');
+                res.send(jsonResponse);
+            }        
+            if(objectId === false) {
+                console.log("Invalid object id!");
+                res.send(jsonResponse);
+            } else {
+                var oldPassword = req.params.password;
+                var newPassword = req.params.npassword;
+                var oldHash = req.user.password;
+                var newHash;
+
+                if (!bcrypt.compareSync(oldPassword, oldHash)) {
+                    req.flash('message', 'The current password is wrong !');
+                    res.send(jsonResponse);
+                } else {
+                    newHash = bcrypt.hashSync(newPassword, null, null);
+                    var newCredentials = {
+                        password: newHash
+                    };                    
+                    // Save new hashed password
+                    User.update({_id: objectId}, newCredentials, function (err) {
+                        if (err) throw err;
+                        
+                        var jsonResponse = {
+                            updated: true
+                        };
+                        
+                        res.send(jsonResponse);                        
+                    });
+                }
+            }            
+});
+    
 
     // Return 404 on missing pages
     app.get('*', function (req, res) {
