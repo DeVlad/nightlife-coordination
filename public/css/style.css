@@ -159,7 +159,7 @@ address {
     color: #FFF;
 }
 
-#fail-alert {
+#login-fail-alert {
     font-size: 20px;
     border: 1px solid red;
 }

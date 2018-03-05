@@ -6,9 +6,6 @@
         <a href="/user/{{user.id}}/venues/"><button class="btn btn-fancy">My Venues</button></a><br>
         <hr>
     </div>
-    {{#if message}}
-    <div class="alert">{{message}}</div>
-    {{/if}}
     <button id="btn-change-password" class="btn btn-fancy">Change password</button>
     <button id="remove" class="btn btn-danger pull-right" data-id="{{user.id}}" data-toggle="modal" data-target="#delete-account-modal">Unsubscribe</button>
 </div>
@@ -30,6 +27,10 @@
     </div>
 </div>
 
+<div class="row">
+    <div class="col-md-4 col-md-offset-4 white transparent text-center" id="status-message"></div>
+</div><br>
+
 <div id="password-wrapper" class="row invisible">
     <form id="password-form" class="col-md-4 col-md-offset-4" data-id="{{user.id}}">
         <div class="input-group input-group-lg">
@@ -47,20 +48,7 @@
         </div>
         <br>
         <div class="text-center"><button type="submit" class="btn btn-fancy">Submit</button></div>
-
     </form>
-    {{#if message}}
-    <br>
-    <div class="col-sm-2 white transparent text-center" id="fail-alert"><strong>{{message}}</strong></div>
-    <script>
-        $(document).ready(function() {
-            $("#fail-alert").fadeTo(4000, 500).slideUp(500, function() {
-                $("#fail-alert").slideUp(500);
-            });
-        });
-
-    </script>
-    {{/if}}
 </div>
 
 <link rel="stylesheet" href="/css/profile.css">
@@ -69,15 +57,15 @@
 <script>
     $(document).ready(function() {
         $.validator.setDefaults({
-            submitHandler: function(form) {   
+            submitHandler: function(form) {
                 var password = $(form).find('input[name="password"]').val();
                 var newPassword = $(form).find('input[name="npassword"]').val();
                 var userId = $('#password-form').data('id');
-                
+
                 changePassword(userId, password, newPassword);
             }
         });
-        
+
         $("#password-form").on("submit", function(event) {
             event.preventDefault();
         });
@@ -142,20 +130,29 @@
         $("#password-wrapper").toggleClass("invisible");
     });
 
+    function displayStatusMessage(message) {
+        console.log("STATUS:", message);
+        $("#status-message").text(message).fadeTo(4000, 500).slideUp(500, function() {
+            $("#status-message").slideUp(500);
+        });
+    }
+
     function changePassword(userId, password, newPassword) {
-        console.log('change pass');
         var url = window.location.origin + '/user/' + userId + '/' + password + '/' + newPassword;
-        console.log(url);
+
         $.ajax({
             url: url,
             type: 'PUT',
             success: function(result) {
-                if(result.changed) {
-                    console.log("Change Succes", result);
+                if (result.changed) {
+                    $("#password-wrapper").toggleClass("invisible");
+                    $("#status-message").css('border', '1px solid green');
+                    $("#password-form").trigger('reset');
+                    displayStatusMessage(result.message);
                 } else {
-                    console.log("Change fail", result); // TODO: Confirmation message
+                    $("#status-message").css('border', '1px solid red');
+                    displayStatusMessage(result.message);
                 }
-                
             }
         }, 'json');
     }
@@ -165,8 +162,15 @@
         $.ajax({
             url: url,
             type: 'DELETE',
-            success: function(result) {
-                console.log("Deleted", result); // TODO: Confirmation message and redirect
+            success: function(result) {                
+                 if (result.deleted) {
+                    $("#status-message").css('border', '1px solid green');
+                    displayStatusMessage(result.message);
+                    setTimeout("window.location.href='/';", 6000);
+                } else {
+                    $("#status-message").css('border', '1px solid red');
+                    displayStatusMessage(result.message);
+                }
             }
         }, 'json');
     }

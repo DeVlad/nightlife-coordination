@@ -344,6 +344,7 @@ module.exports = function (app, passport) {
         if(userId !== req.user.id) { // ensure the user can delete only himself
             console.log('WARNING: User with id: ' + req.user.id + 'is trying to delete user id: ' + req.params.id + ' !');
             secure.log(time.timestamp(), 'WARNING: User with id: ' + req.user.id + 'is trying to delete user id: ' + req.params.id + ' !' );
+            jsonResponse.message = 'Error ! Please contact the support team';
             res.send(jsonResponse);
         } else {            
             // Remove user from all venues before account removal
@@ -359,9 +360,9 @@ module.exports = function (app, passport) {
                     if(err) throw err;
                     console.log("DELETE: User id: " + userId + " is removed from database !");
                     info.log(time.timestamp(), "DELETE: User id: " + userId + " is removed from database !");
-                    jsonResponse = {
-                        "id": userId,
-                        "deleted": true
+                    jsonResponse = {                        
+                        "deleted": true,
+                        "message": "Your account has been deleted successfully!"
                     }
                     
                     res.send(jsonResponse);
