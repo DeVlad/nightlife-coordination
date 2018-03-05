@@ -7,6 +7,20 @@ var form = require('express-form2'),
     field = form.field,
     validate = form.validate;
 var app = express();
+var fs = require('fs');
+var Console = require('console');
+
+var User = require('../models/user');
+var Venue = require('../models/venue');
+var time = require('../lib/timestamp');
+
+// Log
+var infoLog = fs.createWriteStream('./log/info.log', {'flags': 'a'});
+var secureLog = fs.createWriteStream('./log/secure.log', {'flags': 'a'});
+var errorLog = fs.createWriteStream('./log/error.log', {'flags': 'a'});
+var info = new console.Console(infoLog);
+var secure = new console.Console(secureLog);
+var error = new console.Console(errorLog);
 
 app.use(bodyParser.urlencoded({
     extended: true
@@ -14,12 +28,10 @@ app.use(bodyParser.urlencoded({
 
 app.use(bodyParser.json());
 
-var User = require('../models/user');
-var Venue = require('../models/venue');
-
 // API
 if (!process.env.API_URL || (!process.env.API_ID) || (!process.env.API_KEY)) {
     console.log('WARNING: Please export API credentials as environment variables !');
+    error.log(time.timestamp(), 'WARNING: Please export API credentials as environment variables !');    
 } else {
     var config = require('../config/config');
     var apiQuery = buildUrl(config);
@@ -38,6 +50,7 @@ module.exports = function (app, passport) {
     app.post('/search', function (req, res) {
         if (!apiQuery) {
             console.log('WARNING: Please export API credentials as environment variables !');
+            secure.log(time.timestamp(), 'WARNING: Please export API credentials as environment variables !');
             return res.send('ERROR: No API credentials exported !');
         } else {
             // Empty search
@@ -51,7 +64,7 @@ module.exports = function (app, passport) {
             var apiResponse = {};
             var searchTerm = req.body.search;
             searchTerm = searchTerm.trim().replace(/[_/\\#$;|"?<>*(){}*@^.:!%&[\]`~=+]/g, ''); // Sanitaze user input
-            //console.log(searchTerm);            
+            //console.log(searchTerm);
             if (req.isAuthenticated()) {
                 saveLastSearch(req.user._id, searchTerm);
             }
@@ -330,6 +343,7 @@ module.exports = function (app, passport) {
         
         if(userId !== req.user.id) { // ensure the user can delete only himself
             console.log('WARNING: User with id: ' + req.user.id + 'is trying to delete user id: ' + req.params.id + ' !');
+            secure.log(time.timestamp(), 'WARNING: User with id: ' + req.user.id + 'is trying to delete user id: ' + req.params.id + ' !' );
             res.send(jsonResponse);
         } else {            
             // Remove user from all venues before account removal
@@ -344,6 +358,7 @@ module.exports = function (app, passport) {
                 User.remove({ "_id": objectId }, function (err, user) {
                     if(err) throw err;
                     console.log("DELETE: User id: " + userId + " is removed from database !");
+                    info.log(time.timestamp(), "DELETE: User id: " + userId + " is removed from database !");
                     jsonResponse = {
                         "id": userId,
                         "deleted": true
@@ -435,11 +450,16 @@ module.exports = function (app, passport) {
         
             if(userId !== req.user.id) { // ensure the user can change only his own password
                 console.log('WARNING: User with id: ' + req.user.id + 'is trying to change password of user id: ' + req.params.id + ' !');
-                res.send(jsonResponse);
+                secure.log(time.timestamp(), 'WARNING: User with id: ' + req.user.id + 'is trying to change password of user id: ' + req.params.id + ' !');
+                jsonResponse.message = 'Error! Please contact the support team!';
+                return res.send(jsonResponse);
             }        
             if(objectId === false) {
-                console.log("Invalid object id!");
-                res.send(jsonResponse);
+                console.log('WARNING: Invalid object id in password change attempt');
+                secure.log(time.timestamp(), 'WARNING: Invalid object id in password change attempt!');
+                jsonResponse.message = 'Error! Please contact the support team!';
+                
+                return res.send(jsonResponse);
             } else {
                 var oldPassword = req.params.password;
                 var newPassword = req.params.npassword;
@@ -447,22 +467,21 @@ module.exports = function (app, passport) {
                 var newHash;
 
                 if (!bcrypt.compareSync(oldPassword, oldHash)) {
-                    req.flash('message', 'The current password is wrong !');
-                    res.send(jsonResponse);
+                    jsonResponse.message = 'The current password is wrong!';
+                    return res.send(jsonResponse);
                 } else {
                     newHash = bcrypt.hashSync(newPassword, null, null);
                     var newCredentials = {
                         password: newHash
-                    };                    
+                    };
                     // Save new hashed password
                     User.update({_id: objectId}, newCredentials, function (err) {
                         if (err) throw err;
-                        
-                        var jsonResponse = {
-                            updated: true
-                        };
-                        
-                        res.send(jsonResponse);                        
+                        jsonResponse.changed = true;
+                        jsonResponse.message = 'Your password has been changed successfully!';
+                        secure.log(time.timestamp(), 'INFO: User id ' + userId + ' changed his password.');
+                                   
+                        res.send(jsonResponse);
                     });
                 }
             }            

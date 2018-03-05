@@ -64,17 +64,17 @@
 </div>
 
 <link rel="stylesheet" href="/css/profile.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js" defer></script>
+<script src="{{cdn.jQueryValidate}}" defer></script>
 
 <script>
-    $(document).ready(function() {        
+    $(document).ready(function() {
         $.validator.setDefaults({
-            submitHandler: function(form) {               
+            submitHandler: function(form) {   
                 var password = $(form).find('input[name="password"]').val();
                 var newPassword = $(form).find('input[name="npassword"]').val();
-                var userId = $('#password-form').data('id');                
-                console.log(password,newPassword, userId);
-                changePassword(userId, password, newPassword);                
+                var userId = $('#password-form').data('id');
+                
+                changePassword(userId, password, newPassword);
             }
         });
         
@@ -150,7 +150,12 @@
             url: url,
             type: 'PUT',
             success: function(result) {
-                console.log("Changed", result); // TODO: Confirmation message
+                if(result.changed) {
+                    console.log("Change Succes", result);
+                } else {
+                    console.log("Change fail", result); // TODO: Confirmation message
+                }
+                
             }
         }, 'json');
     }

@@ -3,3 +3,4 @@ package-lock.json
 set-env.sh
 .env
 .snyk
+/log/*

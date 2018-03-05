@@ -54,6 +54,14 @@ require('./config/passport')(passport);
 // Cron scheduled tasks
 require('./config/cron');
 
+// App config
+var config = require('./config/config');
+
+// CDN resources for views
+app.locals = ({
+    cdn: config.cdn    
+});
+
 // Read cookies
 app.use(cookieParser());
 
@@ -70,13 +78,13 @@ app.engine('.hbs', exphbs({
 }));
 app.set('view engine', '.hbs');
 
+
 // Required for passport
 app.use(session({
     secret: 'ItsVerySecret.ChangeAndStoreItInEnvVariableInProduction!',
     resave: true,
     saveUninitialized: true
 }));
-
 app.use(passport.initialize());
 
 // Persistent login sessions
