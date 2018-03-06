@@ -9,13 +9,13 @@
             </div>
             <div class="col col-sm-6 col-md-4 input-group input-group-lg">
                 <span class="input-group-addon"> <span class="glyphicon glyphicon-lock"></span></span>
-                <input class="form-control" type="password" name="password" value="12345678" required aria-required="true" placeholder="Password">
+                <input class="form-control" type="password" name="password" value="12345678" minlength="8" maxlength="48" required aria-required="true" placeholder="Password">
             </div><br>
             <button type="submit" class="btn btn-fancy">Login</button>
         </form>
         {{#if message}}
         <br>
-        <div class="col-sm-2 white transparent text-center" id="fail-alert"><strong>{{message}}</strong></div>
+        <div class="col-sm-2 white transparent text-center" id="login-fail-alert"><strong>{{message}}</strong></div>
         <script>
             $(document).ready(function() {
                 $("#login-fail-alert").fadeTo(4000, 500).slideUp(500, function() {

@@ -50,10 +50,8 @@
         <div class="text-center"><button type="submit" class="btn btn-fancy">Submit</button></div>
     </form>
 </div>
-
 <link rel="stylesheet" href="/css/profile.css">
 <script src="{{cdn.jQueryValidate}}" defer></script>
-
 <script>
     $(document).ready(function() {
         $.validator.setDefaults({
@@ -115,9 +113,6 @@
         });
     });
 
-</script>
-
-<script>
     // Modal handler
     $(document).on("click", "#remove", function() {
         var removeUserId = $(this).data("id");
@@ -162,8 +157,8 @@
         $.ajax({
             url: url,
             type: 'DELETE',
-            success: function(result) {                
-                 if (result.deleted) {
+            success: function(result) {
+                if (result.deleted) {
                     $("#status-message").css('border', '1px solid green');
                     displayStatusMessage(result.message);
                     setTimeout("window.location.href='/';", 6000);

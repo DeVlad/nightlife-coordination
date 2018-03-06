@@ -1,9 +1,9 @@
 {{>nav}}
 <h2 class="white">Venue details</h2>
-<div class="row">
-    <div class="col- col-md-4 card">
-        <strong>{{venue.name}}</strong><br>
-        {{>carousel}}
+<div class="row">    
+    <div class="col col-md-4 card text-center">
+        <strong>{{venue.name}}</strong><br>        
+        {{>carousel}}        
         <address>
         {{venue.location.city}}&nbsp;{{venue.location.country}}<br>
         <a target="_blank" href="http://www.google.com/maps/place/{{venue.location.lat}},{{venue.location.lng}}"><span class="glyphicon glyphicon-map-marker"></span></a>&nbsp;{{venue.location.address}}</address>
@@ -18,5 +18,5 @@
         <div hidden id="lastName">{{user.lastName}}</div>
         <script src="/js/visit.js"></script>       
         {{/if}}
-    </div>
+    </div>    
 </div>

@@ -56,7 +56,7 @@ module.exports = function (app, passport) {
             // Empty search
             if (req.body.search.length == 0) {
                 return res.render('search', {
-                    message: 'No venues found !',
+                    message: 'Empty search ! Please enter some text !',
                     searched: req.body.search
                 });
             }
@@ -80,7 +80,7 @@ module.exports = function (app, passport) {
                     searched: searchTerm
                 });
 
-            }).catch(function (error) {       
+            }).catch(function (error) {
                 // Venue not found
                 res.render('search', {
                     message: 'No venues found !',
@@ -114,7 +114,7 @@ module.exports = function (app, passport) {
     // Fetch venue picture
     app.post('/venue/picture/:vid', function (req, res) {
         var venueId = req.params.vid;
-        var venueUrl = "https://api.foursquare.com/v2/venues/" + venueId + "?client_id=" + config.api.client_id + "&client_secret=" + config.api.client_secret + "&v=" + config.api.v;
+        var venueUrl = config.api.url + venueId + "?client_id=" + config.api.client_id + "&client_secret=" + config.api.client_secret + "&v=" + config.api.v;
 
         ajax.get(venueUrl).then(function (response) {
             if (response.data.response.venue.bestPhoto) {
@@ -140,7 +140,7 @@ module.exports = function (app, passport) {
     // Fetch all venue pictures
     app.post('/venue/pictures/:vid', function (req, res) {
         var venueId = req.params.vid;
-        var venueUrl = "https://api.foursquare.com/v2/venues/" + venueId + "/photos?client_id=" + config.api.client_id + "&client_secret=" + config.api.client_secret + "&v=" + config.api.v;
+        var venueUrl = config.api.url + venueId + "/photos?client_id=" + config.api.client_id + "&client_secret=" + config.api.client_secret + "&v=" + config.api.v;
 
         ajax.get(venueUrl).then(function (response) {
             if (response.data.response.photos.count > 0) {
@@ -172,7 +172,7 @@ module.exports = function (app, passport) {
     // Venue details page
     app.get('/venue/:vid', function (req, res) {
         var venueId = req.params.vid;
-        var venueUrl = "https://api.foursquare.com/v2/venues/" + venueId + "?client_id=" + config.api.client_id + "&client_secret=" + config.api.client_secret + "&v=" + config.api.v;
+        var venueUrl = config.api.url + venueId + "?client_id=" + config.api.client_id + "&client_secret=" + config.api.client_secret + "&v=" + config.api.v;
         var apiResponse = {};
 
         ajax.get(venueUrl).then(function (response) {
@@ -192,7 +192,7 @@ module.exports = function (app, passport) {
     // Return venue data in json format. TODO: only for auth users.
     app.get('/venue/:vid/json', function (req, res) {
         var venueId = req.params.vid;
-        var venueUrl = "https://api.foursquare.com/v2/venues/" + venueId + "?client_id=" + config.api.client_id + "&client_secret=" + config.api.client_secret + "&v=" + config.api.v;
+        var venueUrl = config.api.url + venueId + "?client_id=" + config.api.client_id + "&client_secret=" + config.api.client_secret + "&v=" + config.api.v;
         var apiResponse = {};
 
         ajax.get(venueUrl).then(function (response) {
@@ -497,11 +497,9 @@ module.exports = function (app, passport) {
 
 // Is authenticated policy
 // Make sure the user is logged
-function isLoggedIn(req, res, next) {
-    // if user is authenticated in the session, carry on
+function isLoggedIn(req, res, next) {    
     if (req.isAuthenticated())
-        return next();
-    // if user is not logged redirect to home page
+        return next();    
     res.redirect('/');
 }
 
@@ -511,13 +509,13 @@ function buildUrl(config) {
     var position = 0;
     for (var param in config.api) {
         if (position === 0) {
-            query += Object.values(config.api)[position];
+            query += Object.values(config.api)[position] + 'search?';
         } else {
             query += Object.keys(config.api)[position] + '=' + Object.values(config.api)[position] + '&';
         }
         position++;
     }
-    //return query.slice(0, -1);
+    //return query.slice(0, -1);    
     return query;
 }
 

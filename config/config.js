@@ -1,6 +1,6 @@
 // Configuration
 
-module.exports = {    
+module.exports = {
     api: {
         url: process.env.API_URL,
         client_id: process.env.API_ID,
