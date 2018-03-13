@@ -1,6 +1,7 @@
 // Configuration
 
 module.exports = {
+    database: "mongodb://localhost/nightlife",
     api: {
         url: process.env.API_URL,
         client_id: process.env.API_ID,

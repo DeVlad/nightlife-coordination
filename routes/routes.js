@@ -418,7 +418,7 @@ module.exports = function (app, passport) {
                 res.redirect('/signup');
             } else {
                 passport.authenticate('local-signup', {
-                    successRedirect: '/login',
+                    successRedirect: '/profile',
                     failureRedirect: '/signup',
                     failureFlash: true
                 })(req, res);

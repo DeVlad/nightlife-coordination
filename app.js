@@ -10,9 +10,18 @@ var exphbs = require('express-handlebars');
 var flash = require('connect-flash');
 var mongoose = require('mongoose');
 
+// Passport Auth
+require('./config/passport')(passport);
+
+// Cron scheduled tasks
+require('./config/cron');
+
+// App config
+var config = require('./config/config');
+
 // Database
 var db = mongoose.connection;
-var uri = 'mongodb://localhost/nightlife';
+var uri = config.database;
 var options = {
     autoReconnect: true,
     keepAlive: 1,
@@ -48,15 +57,6 @@ mongoose.connect(uri, options).catch(function () {
     console.error('Error starting application!');
     process.exit(1);
 });
-
-// Passport Auth
-require('./config/passport')(passport);
-
-// Cron scheduled tasks
-require('./config/cron');
-
-// App config
-var config = require('./config/config');
 
 // CDN resources for views
 app.locals = ({
