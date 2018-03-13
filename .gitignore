@@ -4,3 +4,4 @@ set-env.sh
 .env
 .snyk
 /log/*
+/log/!.gitkeep

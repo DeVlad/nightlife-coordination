@@ -18,9 +18,10 @@ var options = {
     keepAlive: 1,
     connectTimeoutMS: 30000
 };
+var dbName = uri.slice(uri.lastIndexOf('/') + 1); // Do not expose db password to console
 
 db.on('connecting', function () {
-    console.log('Connecting to:', uri);
+    console.log('Connecting to database:', dbName);
 });
 
 db.on('connected', function () {
@@ -77,7 +78,6 @@ app.engine('.hbs', exphbs({
     partialsDir: __dirname + '/views/partials/'
 }));
 app.set('view engine', '.hbs');
-
 
 // Required for passport
 app.use(session({
